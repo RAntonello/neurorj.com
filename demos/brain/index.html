@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>How does your brain respond to language? | Richard J. Antonello</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/main.css" />
+    <style>
+      #text { width: 100%; box-sizing: border-box; font: inherit; padding: 8px; border: 1px solid #ccc; }
+      #brain { width: 100%; display: block; background: #fff; }
+      #status { color: #666; font-size: 14px; }
+      #legend { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #444; }
+      #legend canvas { width: 160px; height: 12px; border: 1px solid #ccc; }
+      button { font: inherit; padding: 6px 14px; }
+      .ex { font-size: 14px; }
+      .ex a { margin-right: 10px; }
+      #words span { padding: 1px 2px; border-radius: 2px; }
+      #words span.win { background: #fde9a8; }
+      #words span.cur { background: #f5b800; font-weight: bold; }
+      table.words { border-collapse: collapse; font-size: 14px; }
+      table.words td { padding: 2px 8px; border-bottom: 1px solid #eee; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.29.0/dist/ort.min.js"></script>
+  </head>
+
+  <body>
+    <main>
+      <article>
+        <p><a href="/demos/">Back to demos</a> &middot; <a href="/">Homepage</a></p>
+        <hr />
+        <h1>How does your brain respond to language?</h1>
+        <p>
+          This demo runs a small language model, GPT-2, locally on your browser and predicts how one person's brain might respond to the sentence you type. Check out some of the listed examples or try out your own!
+        </p>
+        <p>
+          <textarea id="text" rows="3" placeholder="Type something and press Predict.">I went to Paris, then Rome, then New York, and ended up in Boston.</textarea>
+        </p>
+        <p>
+          <button id="go" disabled>Predict</button>
+          <span id="status">Loading model&hellip;</span>
+        </p>
+        <p class="ex" id="examples">
+          Try:
+        </p>
+        <p id="timeline" hidden>
+          <button id="play">&#9654; Play</button>
+          <input id="pos" type="range" min="0" max="0" value="0" style="width:60%;vertical-align:middle;">
+          <a href="#" id="whole">whole text</a>
+        </p>
+        <p id="words" style="line-height:1.8;"></p>
+        <canvas id="brain"></canvas>
+        <p id="legend">
+          <span>less than typical</span><canvas id="cbar"></canvas><span>more than typical</span>
+        </p>
+        <p id="caption" style="font-size:14px;color:#444;"></p>
+      </article>
+    </main>
+    <script src="tokenizer.js"></script>
+    <script src="demo.js"></script>
+  </body>
+</html>
