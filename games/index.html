@@ -21,6 +21,7 @@
       .win { font-weight: bold; font-size: 18px; }
 
       #boardwrap { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+      #boardwrap[hidden] { display: none; }
       #board { width: min(100%, 480px); height: auto; touch-action: manipulation; user-select: none; }
       .quad { transition: transform 0.45s ease; }
       .cell { fill: #fff; stroke: #cfcfcf; stroke-width: 1; }
