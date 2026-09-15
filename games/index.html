@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+
+    <title>Pentago</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/main.css" />
+    <style>
+      #lobby input { font: inherit; padding: 6px 8px; width: 9em; text-transform: uppercase; letter-spacing: 0.1em; }
+      button { font: inherit; padding: 6px 14px; cursor: pointer; }
+      button:disabled { cursor: default; opacity: 0.6; }
+      #code { font-family: monospace; font-size: 22px; letter-spacing: 0.15em; }
+      #link { font-family: monospace; font-size: 13px; word-break: break-all; }
+      #status { min-height: 1.4em; }
+      .turn-me { color: #1a7f37; font-weight: bold; }
+      .turn-them { color: #666; }
+      .win { font-weight: bold; font-size: 18px; }
+
+      #boardwrap { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+      #board { width: min(100%, 480px); height: auto; touch-action: manipulation; user-select: none; }
+      .quad { transition: transform 0.45s ease; }
+      .cell { fill: #fff; stroke: #cfcfcf; stroke-width: 1; }
+      .cell.free:hover { fill: #f2f6ff; cursor: pointer; }
+      .stone { pointer-events: none; }
+      .stone.b { fill: #222; }
+      .stone.w { fill: #f4f4f4; stroke: #666; stroke-width: 1.5; }
+      .stone.pending { stroke: #e0a800; stroke-width: 3; }
+      .stone.line { stroke: #1a7f37; stroke-width: 4; }
+      .arrow { fill: #fff; stroke: #888; stroke-width: 1.5; cursor: pointer; }
+      .arrow:hover { fill: #ffe9a8; }
+      .arrow.off { display: none; }
+      .arrowtxt { font: 18px sans-serif; fill: #444; pointer-events: none; }
+      .arrowtxt.off { display: none; }
+      #side { max-width: 260px; font-size: 15px; }
+      #side h2 { margin-top: 0; }
+      #rules { font-size: 14px; color: #444; }
+      #rules li { margin-bottom: 4px; }
+      #log { font-size: 13px; color: #666; max-height: 8em; overflow-y: auto; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
+  </head>
+
+  <body>
+    <main>
+      <article>
+        <h1>Pentago</h1>
+
+        <div id="lobby">
+          <p>
+            <button id="create">Create a game</button>
+            <span id="created" hidden>
+              &nbsp; Your code: <span id="code"></span>
+              &nbsp; <button id="copy">Copy link</button>
+              <br /><span id="link"></span>
+              <br /><span id="waiting">Waiting for the other player to join&hellip;</span>
+            </span>
+          </p>
+          <p>
+            <input id="joincode" placeholder="game code" maxlength="6" />
+            <button id="join">Join a game</button>
+            &nbsp; or &nbsp;
+            <button id="local">Play on this computer</button>
+          </p>
+        </div>
+
+        <p id="status"></p>
+
+        <div id="boardwrap" hidden>
+          <svg id="board" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg"></svg>
+          <div id="side">
+            <h2 id="players"></h2>
+            <p id="hint"></p>
+            <p><button id="rematch" hidden>Rematch</button></p>
+            <ul id="rules">
+              <li>Take turns. On your turn, place a marble on any empty space, then rotate one of the four blocks a quarter turn in either direction.</li>
+              <li>The first player to get five marbles in a row, in any direction, wins.</li>
+              <li>Five in a row is checked after the rotation. If you already have five in a row after placing, you win without rotating.</li>
+              <li>If both players get five in a row from the same rotation, or the board fills up, it's a draw.</li>
+            </ul>
+            <div id="log"></div>
+          </div>
+        </div>
+      </article>
+    </main>
+    <script src="pentago.js"></script>
+  </body>
+</html>
