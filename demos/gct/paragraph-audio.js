@@ -11,6 +11,65 @@
   if (!audio || !scene || !controls || !play || !mute || !position || !error) return;
   let sourcePromise, sourceURL, request = 0, wasVisible = false;
   const visible = () => scene.getAttribute('aria-hidden') === 'false' && !document.hidden;
+  const reading = createReadingGuide();
+
+  function createReadingGuide() {
+    const paragraph = document.getElementById('generation-text');
+    // Natural phrase boundaries within this fixed, 39-word narration.
+    const ends = [4, 8, 14, 19, 22, 27, 31, 35, 39];
+    let phrases = [], current = -1, frame = 0, timingPromise;
+    function paint() {
+      const time = audio.currentTime;
+      const next = visible() && !audio.ended
+        ? phrases.findIndex(phrase => time >= phrase.start && time < phrase.end) : -1;
+      if (next === current) return;
+      phrases[current]?.element.classList.remove('is-spoken');
+      phrases[next]?.element.classList.add('is-spoken');
+      current = next;
+    }
+    function tick() {
+      frame = 0; paint();
+      if (visible() && !audio.paused && !audio.ended && phrases.length) frame = requestAnimationFrame(tick);
+    }
+    function sync() {
+      cancelAnimationFrame(frame); frame = 0;
+      tick();
+    }
+    function load() {
+      if (!timingPromise) timingPromise = (async () => {
+        const response = await fetch('audio/travel-paragraph.json');
+        if (!response.ok) throw Error('Paragraph timings unavailable.');
+        const timing = await response.json(), words = timing.words;
+        const text = paragraph.textContent;
+        if (timing.text !== text || timing.src !== audio.dataset.src
+          || !Array.isArray(words) || words.length !== ends.at(-1)
+          || words.map(word => word.word).join(' ') !== text
+          || !Number.isFinite(timing.duration)
+          || words.some((word, i) => !Number.isFinite(word.start) || !Number.isFinite(word.end)
+            || word.start < 0 || word.end <= word.start || word.end > timing.duration
+            || (i > 0 && word.start < words[i - 1].end))) throw Error('Paragraph timings do not match.');
+        const content = document.createDocumentFragment();
+        let start = 0;
+        phrases = ends.map(end => {
+          const element = document.createElement('span');
+          element.className = 'spoken-phrase';
+          element.textContent = words.slice(start, end).map(word => word.word).join(' ');
+          if (start) content.append(' ');
+          content.append(element);
+          const phrase = { element, start: words[start].start, end: words[end - 1].end };
+          start = end;
+          return phrase;
+        });
+        paragraph.replaceChildren(content);
+        sync();
+      })().catch(() => {
+        // The reading guide is optional; unavailable timings must not stop audio.
+        timingPromise = null;
+      });
+      return timingPromise;
+    }
+    return { load, sync };
+  }
 
   function sync() {
     const playing = !audio.paused && !audio.ended;
@@ -27,6 +86,7 @@
       position.value = audio.currentTime;
       position.setAttribute('aria-valuetext', `${Math.floor(audio.currentTime)} of ${Math.ceil(duration)} seconds`);
     }
+    reading.sync();
   }
 
   function load() {
@@ -89,7 +149,7 @@
   }
   function updateVisibility() {
     const active = visible();
-    if (active && !wasVisible) load();
+    if (active && !wasVisible) { load(); reading.load(); }
     if (!active) pause();
     wasVisible = active;
   }

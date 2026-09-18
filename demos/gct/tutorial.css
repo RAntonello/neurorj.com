@@ -120,6 +120,8 @@ h2 { max-width:1100px; font-size:clamp(26px,3vw,43px); }
 .generation-output-link,.generation-output { opacity:var(--stimulus-opacity,0); }
 .generation-output { position:absolute; left:70%; top:var(--stimulus-y,0px); transform:translate(var(--stimulus-shift-x,0px),var(--stimulus-shift-y,0px)) translateY(-50%); width:30%; margin:0; font-family:var(--mono); font-size:clamp(13px,1.3vw,17px); line-height:1.65; letter-spacing:-.025em; color:var(--ink); }
 #generation-text { margin:0; }
+.spoken-phrase { text-decoration:underline solid transparent 1px; text-underline-offset:.22em; transition:text-decoration-color .14s ease; }
+.spoken-phrase.is-spoken { text-decoration-color:#ad604b88; }
 .paragraph-controls { display:flex; align-items:center; gap:12px; width:min(240px,100%); min-height:30px; margin-top:12px; font-family:var(--sans); font-size:12px; letter-spacing:0; color:#817487; }
 .paragraph-controls button { display:flex; align-items:center; justify-content:center; flex:none; border:0; background:none; padding:6px 0; min-height:30px; color:inherit; font:inherit; cursor:pointer; }
 .paragraph-controls button:hover { color:var(--accent); }

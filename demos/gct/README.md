@@ -50,6 +50,11 @@ continue through the input, prompt, network, and output connections. The paragra
 is an illustrative example written for this tutorial, not a stimulus from the
 published study or a live generation call. On mobile it appears below the model.
 The paragraph has compact Listen/Pause, mute, and seek controls. Its narration
+has a faint underline beneath the phrase currently being spoken, aligned to the
+existing word timestamps. Pausing holds the underline, seeking updates it, and
+finishing playback or leaving the paragraph clears it. Inline spans preserve the
+original transcript and line wrapping; reduced motion removes the underline fade.
+If timing data cannot load, the paragraph and audio still work normally. Narration
 continues into the feedback panel, pauses when leaving the paragraph or hiding
 the tab, and shares the earlier demo's mute preference. It starts only on user
 request. The feedback brain shows the encoding model's prediction for this exact
