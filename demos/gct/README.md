@@ -49,6 +49,10 @@ feeds in from above, and a short travel paragraph appears at the output. Signals
 continue through the input, prompt, network, and output connections. The paragraph
 is an illustrative example written for this tutorial, not a stimulus from the
 published study or a live generation call. On mobile it appears below the model.
+The paragraph has compact Listen/Pause, mute, and seek controls. Its narration
+continues into the feedback panel, pauses when leaving the paragraph or hiding
+the tab, and shares the earlier demo's mute preference. It starts only on user
+request and does not animate an invented brain response.
 The heading introduces generating driving stimuli to test *in vivo*. Scrolling
 back restores the centered explanation and earlier diagram; reduced-motion mode
 changes positions directly and disables the pulses.
@@ -212,13 +216,18 @@ vertex. Rebuild it with Python, NumPy, and SciPy using
 `af_heart` and `am_fenrir`, at speed 0.96. ElevenLabs was not connected in this
 environment. No browser speech-synthesis service or API key is needed at runtime.
 
-`scripts/generate_audio.py` regenerates the MP3s and `audio/timings.json` from
+`scripts/generate_audio.py` regenerates the ten snippet MP3s and `audio/timings.json` from
 `snippets.json`. It requires Kokoro 0.9.4, PyTorch, NumPy, SoundFile, and FFmpeg.
 Kokoro's predicted phoneme durations supply the word timestamps, with contraction
 and punctuation tokens reassembled against the original whitespace-delimited
 transcript. The script asserts that every spoken word matches that transcript.
 Audio is generated at 24 kHz and encoded as 96 kbps MP3. Kokoro code and model
 weights use Apache 2.0; these are synthetic voices and original demo transcripts.
+
+`scripts/generate_paragraph_audio.py` regenerates `audio/travel-paragraph.mp3`
+directly from `#generation-text` in the page, with `af_heart` at the same speed and
+encoding settings. This 14.2-second narration is separate from the ten snippet
+predictions and timings; it has no model-response or measured-response data.
 
 ## 3D anatomy
 

@@ -23,6 +23,7 @@
     $('play-pause').title = playing ? 'Pause' : 'Play';
     $('mute-audio').setAttribute('aria-pressed', String(audio.muted));
     $('mute-audio').title = audio.muted ? 'Unmute audio' : 'Mute audio';
+    $('mute-audio').setAttribute('aria-label', $('mute-audio').title);
     model.classList.toggle('is-playing', playing);
     $('hero-play').setAttribute('aria-label', playing ? 'Pause the spoken example' : 'Play the spoken example');
   }
