@@ -15,6 +15,7 @@
   let raf = 0, playRequest = 0, lastPaintTime = -1, wordIndex = -1;
   let shown;
   const audioCache = new Map();
+  const scrollHint = createScrollHint();
 
   function syncEncodingSignals() {
     model.classList.toggle('is-signaling', progress < 2.6 && !reduced.matches && !document.hidden);
@@ -75,11 +76,6 @@
     stage.style.setProperty('--context-opacity', 1 - boxBlend);
     stage.style.setProperty('--brain-opacity', 1 - corpusBlend);
     $('model-description').style.opacity = clamp((progress - .0475) / .437);
-    // The scroll cue clears before the opening's lower text appears.
-    const showScrollCue = progress < .045;
-    $('next').style.opacity = 1 - clamp(progress / .045);
-    $('next').inert = !showScrollCue;
-    $('next').setAttribute('aria-hidden', String(!showScrollCue));
     const nextPanel = closingBlend >= .5 ? 11 : feedbackBlend >= .5 ? 10 : generationBlend >= .5 ? 9 : candidateBlend >= .5 ? 8 : llmBlend >= .5 ? 7 : locationBlend >= .5 ? 6 : rankBlend >= .5 ? 5 : corpusBlend >= .5 ? 4 : rscBlend >= .5 ? 3 : boxBlend >= .5 ? 2 : blend >= .5 ? 1 : 0;
     if (nextPanel >= 2 && selectedPanel < 2) {
       pending = null; ++playRequest; audio.pause(); cleanup();
@@ -129,6 +125,7 @@
       if (i === nextPanel) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
     });
     selectedPanel = nextPanel; scrollQueued = false;
+    scrollHint.setPanel(nextPanel);
     syncEncodingSignals();
     syncBrainPresentation();
   }
@@ -167,8 +164,54 @@
   function goTo(position) {
     window.scrollTo({ top: stage.offsetHeight * position, behavior: reduced.matches ? 'instant' : 'smooth' });
   }
+  function createScrollHint() {
+    const button = $('next'), delay = 30_000;
+    let panel = -1, timer = 0, started = 0, remaining = delay, revealed = false;
+    function display(value) {
+      button.classList.toggle('is-visible', value);
+      button.inert = !value;
+      button.setAttribute('aria-hidden', String(!value));
+    }
+    function pauseTimer() {
+      if (!timer) return;
+      clearTimeout(timer); timer = 0;
+      remaining = Math.max(0, remaining - (performance.now() - started));
+    }
+    function revealHint() {
+      timer = 0; remaining = 0;
+      if (panel < 0 || panel === panels.length - 1 || document.hidden) return;
+      button.classList.toggle('is-opening', panel === 0);
+      revealed = true; display(true);
+    }
+    function startTimer() {
+      if (timer || revealed || panel < 0 || panel === panels.length - 1 || document.hidden) return;
+      started = performance.now(); timer = setTimeout(revealHint, remaining);
+    }
+    function reset() {
+      pauseTimer(); remaining = delay; revealed = false; display(false); startTimer();
+    }
+    // Scroll within a slide still counts toward dwell time. Once the hint is
+    // visible, scrolling dismisses it and starts a fresh 30-second interval.
+    addEventListener('scroll', () => { if (revealed) reset(); }, { passive: true });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { pauseTimer(); display(false); }
+      else if (revealed) display(true);
+      else startTimer();
+    });
+    return {
+      setPanel(value) {
+        if (value === panel) return;
+        panel = value; reset();
+      },
+      dismiss: reset
+    };
+  }
   addEventListener('scroll', queueScroll, { passive: true }); addEventListener('resize', queueScroll);
-  $('next').addEventListener('click', () => goTo(progress < .57 ? .665 : panelStops[1]));
+  $('next').addEventListener('click', () => {
+    if (selectedPanel === panels.length - 1) return;
+    scrollHint.dismiss();
+    goTo(selectedPanel === 0 && progress < .57 ? .665 : panelStops[selectedPanel + 1]);
+  });
   document.querySelectorAll('[data-panel]').forEach(b => b.addEventListener('click', () => goTo(panelStops[Number(b.dataset.panel)])));
 
   async function json(path) {
@@ -862,7 +905,14 @@
     stage.style.setProperty('--cloud-top', `${cloudTop}px`);
     stage.style.setProperty('--model-top', `${modelTop}px`);
     stage.style.setProperty('--copy-top', `${copyTop}px`);
-    stage.style.setProperty('--next-top', `${copyTop + $('model-description').offsetHeight + 8}px`);
+    const cueHeight = $('next').offsetHeight;
+    const cueBottom = innerWidth > 370 && innerWidth <= 700 ? 48 : 18;
+    const belowCopy = copyTop + $('model-description').offsetHeight + 8;
+    // The opening's empty cloud space is a fallback when its lower text
+    // leaves no room for a delayed cue on a short screen.
+    const cueTop = belowCopy + cueHeight <= stage.clientHeight - cueBottom
+      ? belowCopy : cloudTop + (cloudHeight - cueHeight) / 2;
+    stage.style.setProperty('--next-top', `${cueTop}px`);
     const boxTop = modelTop + (model.offsetHeight - target.offsetHeight) / 2;
     const titleTop = boxTop - $('black-box-title').offsetHeight - (compact ? 28 : 48);
     stage.style.setProperty('--black-box-title-top', `${Math.max(46, titleTop)}px`);
