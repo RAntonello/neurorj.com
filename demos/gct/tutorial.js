@@ -619,7 +619,9 @@
       const rowHeight = Math.max(compact ? 14 : narrow ? 17 : 21, fontSize * 1.35);
       const rankTitleHeight = $('ranking-title').offsetHeight, rankGap = compact ? 24 : gap;
       const fullHeight = rows * rowHeight;
-      const rankHeight = Math.min(fullHeight, Math.max(rowHeight * 3, stage.clientHeight - 70 - rankTitleHeight - rankGap));
+      // Centered desktop navigation needs a clear footer below the ranked list.
+      const rankFooter = narrow ? 70 : 120;
+      const rankHeight = Math.min(fullHeight, Math.max(rowHeight * 3, stage.clientHeight - rankFooter - rankTitleHeight - rankGap));
       const rankTop = Math.max(46, (stage.clientHeight - rankTitleHeight - rankGap - rankHeight) / 2);
       const rankCenter = rankTop + rankTitleHeight + rankGap + rankHeight / 2;
       stage.style.setProperty('--ranking-title-top', `${rankTop}px`);
@@ -916,7 +918,7 @@
     stage.style.setProperty('--model-top', `${modelTop}px`);
     stage.style.setProperty('--copy-top', `${copyTop}px`);
     const cueHeight = $('next').offsetHeight;
-    const cueBottom = innerWidth > 370 && innerWidth <= 700 ? 48 : 18;
+    const cueBottom = innerWidth > 370 ? 48 : 18;
     const belowCopy = copyTop + $('model-description').offsetHeight + 8;
     // The opening's empty cloud space is a fallback when its lower text
     // leaves no room for a delayed cue on a short screen.
