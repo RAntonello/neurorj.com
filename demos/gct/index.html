@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>Language encoding models · Generative causal testing</title>
+  <link rel="stylesheet" href="tutorial.css">
+  <script defer src="tutorial.js"></script>
+  <script defer src="paper-box.js"></script>
+</head>
+<body>
+  <a class="back" href="/demos/" aria-label="Back to demos" title="Back to demos">↖</a>
+  <main id="story-scroll">
+    <div class="stage">
+      <section class="panel opening-panel" id="opening" aria-labelledby="opening-title">
+        <h1 id="opening-title">A language encoding model is a black-box model of how the brain processes language.</h1>
+        <p id="model-description">The model takes a language snippet as input and outputs a prediction of how a person's brain will light up when it hears that snippet.</p>
+        <button class="next" id="next" type="button" aria-label="Continue" title="Continue">↓</button>
+      </section>
+      <section class="panel experiment-panel" id="playground" aria-labelledby="playground-title" aria-hidden="true" inert>
+        <h2 id="playground-title">Language encoding models are useful tools for studying biological language processing, as they allow us to rapidly perform experiments that would be impractical in humans.</h2>
+        <p class="instruction">Drag a snippet into the box to see how the model predicts this person’s brain will respond.</p>
+        <div class="snippet-cloud" id="snippet-cloud" aria-label="Language snippets. Drag, click, or tap a snippet to activate the model.">
+          <button class="snippet s1" data-snippet="places" type="button">The last train</button>
+          <button class="snippet s2" data-snippet="food" type="button">More lemon</button>
+          <button class="snippet s3" data-snippet="people" type="button">A long day</button>
+          <button class="snippet s4" data-snippet="numbers" type="button">Twenty dollars</button>
+          <button class="snippet s5" data-snippet="animals" type="button">By the door</button>
+          <button class="snippet s6" data-snippet="senses" type="button">Morning coffee</button>
+          <button class="snippet s7" data-snippet="directions" type="button">Past the bakery</button>
+          <button class="snippet s8" data-snippet="news" type="button">She got the job</button>
+          <button class="snippet s9" data-snippet="weather" type="button">Rain at the beach</button>
+          <button class="snippet s10" data-snippet="music" type="button">The first notes</button>
+        </div>
+      </section>
+      <section class="panel black-box-panel" id="black-box-panel" aria-labelledby="black-box-title" aria-hidden="true" inert>
+        <h2 id="black-box-title">These models are powerful, but as black boxes, they are difficult to understand.</h2>
+      </section>
+      <section class="panel rsc-panel" id="rsc-panel" aria-labelledby="rsc-title" aria-hidden="true" inert>
+        <h2 id="rsc-title">Let's say we want to better understand how the model predicts responses in retrosplenial cortex, an area in the brain's limbic lobe.</h2>
+      </section>
+      <section class="panel corpus-panel" id="corpus-panel" aria-labelledby="corpus-title" aria-hidden="true" inert>
+        <h2 id="corpus-title">We can learn about the model by examining its responses to a broad collection of snippets.</h2>
+      </section>
+      <section class="panel ranking-panel" id="ranking-panel" aria-labelledby="ranking-title" aria-hidden="true" inert>
+        <h2 id="ranking-title"><span>Some snippets will drive activations in RSC more than others.</span> <span>Can you notice any patterns?</span></h2>
+      </section>
+      <section class="panel location-panel" id="location-panel" aria-labelledby="location-title" aria-hidden="true" inert>
+        <h2 id="location-title">All of the top snippets mention <em class="location-word">locations</em>.</h2>
+      </section>
+      <section class="panel llm-panel" id="llm-panel" aria-labelledby="llm-title" aria-hidden="true" inert>
+        <h2 id="llm-title">An LLM can recognize these kinds of patterns too.</h2>
+      </section>
+      <section class="panel candidate-panel" id="candidate-panel" aria-labelledby="candidate-title" aria-hidden="true" inert>
+        <h2 id="candidate-title">This gives us an automated method for generating candidate explanations for areas like RSC.</h2>
+      </section>
+      <section class="panel generation-panel" id="generation-panel" aria-labelledby="generation-title" aria-hidden="true" inert>
+        <h2 id="generation-title">We can use these candidate explanations to generate driving stimuli to test <em>in vivo</em>.</h2>
+      </section>
+      <section class="panel feedback-panel" id="feedback-panel" aria-labelledby="feedback-title" aria-hidden="true" inert>
+        <h2 id="feedback-title">This gives us a causal feedback mechanism to evaluate the semantic hypotheses generated by encoding models.</h2>
+      </section>
+      <section class="panel paper-panel" id="paper-panel" aria-labelledby="paper-heading" aria-hidden="true" inert>
+        <h2 id="paper-heading">In our newest paper, we use this method, Generative Causal Testing, to drive activity in targeted areas across cortex.</h2>
+        <div class="paper-details">
+          <h3 class="paper-title"><a href="https://arxiv.org/abs/2410.00812" target="_blank" rel="noopener">Generative causal testing to bridge data-driven models and scientific theories in language neuroscience</a></h3>
+          <p class="paper-authors"><span>Richard J. Antonello<sup>†</sup></span>, <span>Chandan Singh<sup>†</sup></span>, <span>Shailee Jain</span>, <span>Aliyah Hsu</span>, <span>Sihang Guo</span>, <span>Jianfeng Gao</span>, <span>Bin Yu<sup>‡</sup></span>, and <span>Alexander G. Huth<sup>‡</sup></span></p>
+          <p class="paper-contributions"><span>† Equal contribution</span><span>‡ Joint supervision</span></p>
+          <p class="paper-citation"><cite>Nature Neuroscience</cite> (accepted, 2026)</p>
+        </div>
+        <div class="paper-box-action">
+          <a class="paper-box" id="paper-box" href="https://arxiv.org/abs/2410.00812" target="_blank" rel="noopener" aria-label="Read the paper: Generative causal testing to bridge data-driven models and scientific theories in language neuroscience">
+            <img class="paper-box-image" src="assets/black-box.webp" alt="" width="640" height="640" draggable="false">
+          </a>
+          <p class="paper-box-hint">Click the box to read the paper</p>
+        </div>
+      </section>
+        <div class="corpus-scene" id="corpus-scene">
+          <div class="corpus-cloud" id="corpus-cloud" role="img" aria-label="A dense cloud of text snippets, including descriptions of locations, flowing into the language encoding model.">
+            <span data-corpus-id="location-01" data-topic="location">beside the lake</span>
+            <span data-corpus-id="everyday-01" data-topic="everyday">she put the kettle on</span>
+            <span data-corpus-id="location-02" data-topic="location">turn left at the bridge</span>
+            <span data-corpus-id="everyday-02" data-topic="everyday">the dog was asleep</span>
+            <span data-corpus-id="location-03" data-topic="location">back to the station</span>
+            <span data-corpus-id="everyday-03" data-topic="everyday">he almost missed the joke</span>
+            <span data-corpus-id="location-04" data-topic="location">overlooking the town square</span>
+            <span data-corpus-id="everyday-04" data-topic="everyday">a little more lemon</span>
+            <span data-corpus-id="location-05" data-topic="location">the path through the woods</span>
+            <span data-corpus-id="everyday-05" data-topic="everyday">she recognized his voice</span>
+            <span data-corpus-id="location-06" data-topic="location">near the old harbor</span>
+            <span data-corpus-id="everyday-06" data-topic="everyday">the music grew louder</span>
+            <span data-corpus-id="location-07" data-topic="location">at the end of the hall</span>
+            <span data-corpus-id="everyday-07" data-topic="everyday">we split the last piece</span>
+            <span data-corpus-id="location-08" data-topic="location">outside the library</span>
+            <span data-corpus-id="everyday-08" data-topic="everyday">he kept his promise</span>
+            <span data-corpus-id="location-09" data-topic="location">beyond the hills</span>
+            <span data-corpus-id="everyday-09" data-topic="everyday">the coffee smelled good</span>
+            <span data-corpus-id="location-10" data-topic="location">the familiar way home</span>
+            <span data-corpus-id="everyday-10" data-topic="everyday">she counted the change</span>
+            <span data-corpus-id="location-11" data-topic="location">across from the bakery</span>
+            <span data-corpus-id="everyday-11" data-topic="everyday">the rain had stopped</span>
+            <span data-corpus-id="location-12" data-topic="location">along the riverbank</span>
+            <span data-corpus-id="everyday-12" data-topic="everyday">we laughed about it later</span>
+            <span data-corpus-id="location-13" data-topic="location">through the courtyard</span>
+            <span data-corpus-id="everyday-13" data-topic="everyday">he rolled up his sleeves</span>
+            <span data-corpus-id="location-14" data-topic="location">the room facing the garden</span>
+            <span data-corpus-id="everyday-14" data-topic="everyday">her hands were cold</span>
+            <span data-corpus-id="everyday-15" data-topic="everyday">the phone rang twice</span>
+            <span data-corpus-id="everyday-16" data-topic="everyday">a bowl of warm soup</span>
+            <span data-corpus-id="everyday-17" data-topic="everyday">he had forgotten her name</span>
+            <span data-corpus-id="everyday-18" data-topic="everyday">the children were singing</span>
+            <span data-corpus-id="everyday-19" data-topic="everyday">she folded the letter</span>
+            <span data-corpus-id="everyday-20" data-topic="everyday">we waited until morning</span>
+            <span data-corpus-id="everyday-21" data-topic="everyday">the bread was still warm</span>
+            <span data-corpus-id="everyday-22" data-topic="everyday">he changed his mind</span>
+            <span data-corpus-id="everyday-23" data-topic="everyday">a familiar melody</span>
+            <span data-corpus-id="everyday-24" data-topic="everyday">she opened the envelope</span>
+            <span data-corpus-id="everyday-25" data-topic="everyday">the glass felt heavy</span>
+            <span data-corpus-id="everyday-26" data-topic="everyday">we ordered the same thing</span>
+            <span data-corpus-id="everyday-27" data-topic="everyday">he smiled at the news</span>
+            <span data-corpus-id="everyday-28" data-topic="everyday">the baby finally slept</span>
+            <span data-corpus-id="everyday-29" data-topic="everyday">she stirred in the sugar</span>
+            <span data-corpus-id="everyday-30" data-topic="everyday">it cost twenty dollars</span>
+            <span data-corpus-id="everyday-31" data-topic="everyday">we saved some for later</span>
+            <span data-corpus-id="everyday-32" data-topic="everyday">the cat stretched lazily</span>
+            <span data-corpus-id="everyday-33" data-topic="everyday">he took a deep breath</span>
+            <span data-corpus-id="everyday-34" data-topic="everyday">she was glad he called</span>
+          </div>
+          <span class="corpus-link" id="corpus-link" aria-hidden="true"></span>
+          <div class="corpus-stream" id="corpus-stream" aria-hidden="true"></div>
+        </div>
+      <div class="llm-scene" id="llm-scene" role="group" aria-label="The ten highest-ranked snippets feed into an LLM, which summarizes their common pattern." aria-hidden="true" inert>
+        <p class="llm-prompt" id="llm-prompt">What do these text snippets have in common?</p>
+        <svg class="llm-links" id="llm-links" aria-hidden="true">
+          <defs><marker id="llm-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1 7 4 1 7"/></marker></defs>
+          <g id="llm-input-links"></g>
+          <path id="llm-prompt-link" class="llm-prompt-link" marker-end="url(#llm-arrow)"/>
+          <path id="llm-prompt-trace" class="llm-trace llm-connector-trace" pathLength="100" style="--read-delay:0s"/>
+          <path id="llm-output-link" class="llm-output-link" marker-end="url(#llm-arrow)"/>
+          <g id="llm-output-traces" class="llm-output-traces"></g>
+        </svg>
+        <div class="llm-node" id="llm-node" aria-label="Large language model"><svg class="llm-network" id="llm-network" viewBox="0 0 220 200" width="220" height="200" aria-hidden="true"></svg><span>LLM</span></div>
+        <a class="llm-explanation" id="llm-explanation" href="https://arxiv.org/html/2410.00812v3#S4" target="_blank" rel="noopener" title="RSC explanation from Fig. 2a of the paper"><span>Travel and</span> <span>location names</span></a>
+      </div>
+      <div class="generation-scene" id="generation-scene" role="group" aria-label="An LLM uses the candidate explanation as a theme to generate a paragraph." aria-hidden="true" inert>
+        <p class="llm-prompt generation-prompt" id="generation-prompt">Generate paragraphs with this input as the theme.</p>
+        <svg class="llm-links generation-links" id="generation-links" aria-hidden="true">
+          <defs><marker id="generation-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1 7 4 1 7"/></marker></defs>
+          <g class="generation-input-link">
+            <path id="generation-input-link" class="llm-output-link" marker-end="url(#generation-arrow)"/>
+            <path id="generation-input-trace" class="llm-trace llm-connector-trace" pathLength="100" style="--read-delay:0s"/>
+          </g>
+          <path id="generation-prompt-link" class="llm-prompt-link" marker-end="url(#generation-arrow)"/>
+          <path id="generation-prompt-trace" class="llm-trace llm-connector-trace" pathLength="100" style="--read-delay:0s"/>
+          <g class="generation-output-link">
+            <path id="generation-output-link" class="llm-output-link" marker-end="url(#generation-arrow)"/>
+            <g id="generation-output-traces"></g>
+          </g>
+        </svg>
+        <div class="llm-node generation-node" id="generation-node" aria-label="Large language model"><svg class="llm-network" id="generation-network" viewBox="0 0 220 200" width="220" height="200" aria-hidden="true"></svg><span>LLM</span></div>
+        <p class="generation-output" id="generation-output">We took the train from Lisbon to Porto and walked from São Bento station down to the Douro River. The next morning, we headed north to Braga, then crossed into Spain and spent the evening in Santiago de Compostela.</p>
+      </div>
+      <div class="feedback-scene" id="feedback-scene" role="group" aria-label="A feedback loop connects the candidate explanation, its generated paragraph, and a brain response that informs evaluation of the hypothesis." aria-hidden="true" inert>
+        <svg class="feedback-links" id="feedback-links" aria-hidden="true">
+          <defs><marker id="feedback-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 7 4 1 7"/></marker></defs>
+          <path id="feedback-stimulus-link" class="feedback-wire" marker-end="url(#feedback-arrow)"/>
+          <path id="feedback-brain-link" class="feedback-wire" marker-end="url(#feedback-arrow)"/>
+          <path id="feedback-return-link" class="feedback-wire feedback-return" marker-end="url(#feedback-arrow)"/>
+          <path id="feedback-stimulus-trace" class="feedback-trace" pathLength="100" style="--feedback-delay:0s"/>
+          <path id="feedback-brain-trace" class="feedback-trace" pathLength="100" style="--feedback-delay:1.7s"/>
+          <path id="feedback-return-trace" class="feedback-trace" pathLength="100" style="--feedback-delay:3.5s"/>
+        </svg>
+        <div class="feedback-brain-wrap" id="feedback-brain-wrap">
+          <canvas class="brain" id="feedback-brain" tabindex="-1" role="img" aria-label="Rotatable, partially inflated medial view of the left hemisphere with retrosplenial cortex highlighted anatomically. Drag or use arrow keys to rotate. Home resets the view."></canvas>
+          <svg class="feedback-rsc" id="feedback-rsc" aria-hidden="true"><path id="feedback-rsc-leader"/><text id="feedback-rsc-label">RSC</text></svg>
+        </div>
+        <span class="feedback-caption" id="feedback-caption">Evaluate <em>in vivo</em> response</span>
+      </div>
+      <div class="model-diagram" id="shared-model" role="group" aria-label="Interactive language encoding model">
+        <button class="example-language" id="hero-play" type="button" aria-label="Play the spoken example"><span class="example-copy">“We missed the last train, so we walked home along the river.”</span><span class="audio-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"><path class="audio-play" d="M5.75 3.5 12.75 8 5.75 12.5Z"/><path class="audio-pause" d="M6 4v8M10 4v8" stroke-width="1.5"/></svg></span></button>
+        <span class="signal" aria-hidden="true"><i></i></span>
+        <div class="drop-zone" id="drop-zone" role="group" aria-label="Drop a snippet into the encoding model">
+          <div class="drop-halo" aria-hidden="true"></div>
+          <div class="black-box interactive-box" aria-hidden="true"><img class="box-photo" src="assets/black-box.webp" alt="" width="640" height="640" draggable="false"></div>
+        </div>
+        <span class="signal" aria-hidden="true"><i></i></span>
+        <div class="brain-side">
+          <canvas id="response-brain" class="brain" tabindex="0" role="img" aria-label="Rotatable 3D brain showing the model’s prediction. Drag or use arrow keys to rotate. Home resets the view."></canvas>
+          <svg class="rsc-overlay" id="rsc-overlay" aria-hidden="true"><path id="rsc-leader-left"/><path id="rsc-leader-right"/><text id="rsc-label" text-anchor="middle">RSC</text></svg>
+          <div class="playback-controls" id="playback-controls" hidden>
+            <button id="play-pause" type="button" aria-label="Pause audio and animation" title="Pause">Ⅱ</button>
+            <button id="mute-audio" class="sound-toggle" type="button" aria-label="Mute audio" aria-pressed="false" title="Mute audio"><svg class="sound-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4Z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/><path class="sound-cross" d="M4 4 20 20M20 4 4 20" stroke-width="1.8"/></svg></button>
+            <input id="word-position" type="range" min="0" max="1" step="0.01" value="0" aria-label="Audio playback position">
+            <button id="replay" type="button" aria-label="Replay audio and animation" title="Replay">↺</button>
+          </div>
+        </div>
+      </div>
+      <audio id="snippet-audio" preload="auto"></audio>
+      <p id="model-status" class="sr-only" role="status">Loading the brain…</p>
+      <div class="load-error" id="load-error" hidden><p id="error-message"></p><button id="retry" type="button">Retry</button></div>
+      <nav class="panel-dots" aria-label="Panels"><button data-panel="0" aria-label="Encoding model" aria-current="step"></button><button data-panel="1" aria-label="Try the model"></button><button data-panel="2" aria-label="Understanding black boxes"></button><button data-panel="3" aria-label="Retrosplenial cortex"></button><button data-panel="4" aria-label="Feed many text snippets"></button><button data-panel="5" aria-label="Rank snippets by predicted RSC response"></button><button data-panel="6" aria-label="Notice the location words"></button><button data-panel="7" aria-label="An LLM explains the pattern"></button><button data-panel="8" aria-label="Candidate explanations"></button><button data-panel="9" aria-label="Generate driving stimuli"></button><button data-panel="10" aria-label="Causal feedback"></button><button data-panel="11" aria-label="Read the paper"></button></nav>
+    </div>
+  </main>
+  <noscript><p>Enable JavaScript to use the interactive model.</p></noscript>
+</body>
+</html>

@@ -1,0 +1,62 @@
+[
+  {
+    "id": "places",
+    "label": "The last train",
+    "text": "We missed the last train, so we walked home along the river.",
+    "voice": "af_heart"
+  },
+  {
+    "id": "food",
+    "label": "More lemon",
+    "text": "I added a little more lemon to the soup, and suddenly it tasted just like my mother's.",
+    "voice": "af_heart"
+  },
+  {
+    "id": "people",
+    "label": "A long day",
+    "text": "I thought she was upset with me, but it turned out she'd just had a really long day.",
+    "voice": "am_fenrir"
+  },
+  {
+    "id": "numbers",
+    "label": "Twenty dollars",
+    "text": "The tickets were twenty dollars each, so the four of us split the cost of a taxi instead.",
+    "voice": "am_fenrir"
+  },
+  {
+    "id": "animals",
+    "label": "By the door",
+    "text": "Every morning, the dog waits by the door with his leash before I've even finished getting dressed.",
+    "voice": "af_heart"
+  },
+  {
+    "id": "senses",
+    "label": "Morning coffee",
+    "text": "I could smell the coffee from the hallway, and I knew my brother was already awake.",
+    "voice": "am_fenrir"
+  },
+  {
+    "id": "directions",
+    "label": "Past the bakery",
+    "text": "If you go past the bakery and take the next left, you'll see the entrance to the park.",
+    "voice": "af_heart"
+  },
+  {
+    "id": "news",
+    "label": "She got the job",
+    "text": "When she told us she'd got the job, we opened the good bottle we'd been saving.",
+    "voice": "af_heart"
+  },
+  {
+    "id": "weather",
+    "label": "Rain at the beach",
+    "text": "It started raining just as we reached the beach, but the kids ran straight into the water anyway.",
+    "voice": "am_fenrir"
+  },
+  {
+    "id": "music",
+    "label": "The first notes",
+    "text": "He played the first few notes on the piano, and everyone in the room started singing along.",
+    "voice": "af_heart"
+  }
+]

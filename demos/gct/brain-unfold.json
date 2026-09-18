@@ -1,0 +1,36 @@
+{
+  "subject": "UTS03",
+  "source": "OpenNeuro ds003020, derivatives/pycortex-db/UTS03",
+  "roi": "RSC functional ROI from the subject overlays.svg; not a cytoarchitectonic atlas label",
+  "vertices": 321587,
+  "flatTriangles": 609870,
+  "leftVertices": 160412,
+  "roiVertexCounts": [
+    626,
+    890
+  ],
+  "flatRscCenters": [
+    [
+      -13.82568359375,
+      26.485048294067383,
+      0.0
+    ],
+    [
+      11.238826751708984,
+      28.391468048095703,
+      0.0
+    ]
+  ],
+  "flatSize": [
+    300.0,
+    145.08644104003906,
+    0.0
+  ],
+  "sourceSha256": {
+    "overlays.svg": "f7f5dc2aeff73ea0c63a65095c7c340bcc3f0e1611455eee4d627fa480ab1673",
+    "surfaces/flat_lh.gii": "0dd964c948ad25b94642b56fd15cef0883f662479fc5cf464d9ccb4db89937c0",
+    "surfaces/flat_rh.gii": "43ab14c3bb35a07b2d0436b49e652ae62796a7ac21f4c935102d3accc0cfaff9",
+    "surfaces/inflated_lh.gii": "3b30567e98f2953a135c1d676dcf56786d1b64ad655208ea4b6c8cd13bf6a4c7",
+    "surfaces/inflated_rh.gii": "346d8b397d30a853d73703dfd8ff5c1612e12afee4c53db28c60d8d2a035ff7f"
+  }
+}
