@@ -48,8 +48,6 @@ h2 { max-width:1100px; font-size:clamp(26px,3vw,43px); }
 .activation-legend-scale { grid-column:1 / -1; height:4px; border-radius:2px; background:linear-gradient(90deg,var(--legend-cool,#3c83c4),#f5f3f2 50%,var(--legend-warm,#e86632)); }
 .activation-legend > :last-child { text-align:right; }
 .interactive-legend { top:calc(100% + 6px); width:min(180px,var(--interactive-brain-width,100%)); opacity:var(--interactive-legend-opacity,0); }
-.ranking-legend { left:31%; top:var(--ranking-legend-top); width:min(180px,62%); opacity:var(--ranking-legend-opacity,0); --legend-cool:#27649f; --legend-warm:#b33138; }
-.feedback-legend { top:calc(var(--feedback-canvas-height) + 6px); }
 #model-description { position:absolute; top:var(--copy-top); left:50%; transform:translateX(-50%); opacity:0; width:min(1100px,90%); font-size:clamp(26px,3vw,44px); }
 .next { position:absolute; bottom:18px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:7px; border:0; background:none; font-size:25px; color:#aaa; cursor:pointer; padding:0 18px; z-index:4; opacity:0; visibility:hidden; pointer-events:none; transition:opacity .35s,visibility 0s .35s; }
 .next.is-opening { top:var(--next-top); bottom:auto; }
@@ -141,9 +139,8 @@ h2 { max-width:1100px; font-size:clamp(26px,3vw,43px); }
 .feedback-scene.is-active #feedback-return-trace { animation-name:feedback-return; }
 @keyframes feedback-flow { 0% { stroke-dashoffset:7; opacity:0; } 3% { opacity:.85; } 20% { stroke-dashoffset:-93; opacity:.85; } 23%,100% { stroke-dashoffset:-100; opacity:0; } }
 @keyframes feedback-return { 0% { stroke-dashoffset:7; opacity:0; } 3% { opacity:.85; } 35.7% { stroke-dashoffset:-93; opacity:.85; } 39%,100% { stroke-dashoffset:-100; opacity:0; } }
-.feedback-brain-wrap { --feedback-canvas-height:260px; position:absolute; left:73%; top:var(--feedback-brain-top,40%); width:27%; height:calc(var(--feedback-canvas-height) + var(--feedback-legend-space,40px)); pointer-events:auto; }
-.feedback-brain-wrap .brain { height:var(--feedback-canvas-height); }
-.feedback-rsc { position:absolute; inset:0; width:100%; height:var(--feedback-canvas-height); pointer-events:none; overflow:visible; }
+.feedback-brain-wrap { position:absolute; left:73%; top:var(--feedback-brain-top,40%); width:27%; height:260px; pointer-events:auto; }
+.feedback-rsc { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; }
 .feedback-rsc path { fill:none; stroke:#655d67; stroke-width:1; }
 .feedback-rsc text { font:13px var(--sans); fill:#45404a; paint-order:stroke; stroke:white; stroke-width:3px; stroke-linejoin:round; }
 .feedback-caption { position:absolute; left:var(--feedback-caption-x,50%); top:var(--feedback-caption-y,75%); transform:translateX(-50%); color:#9a705f; font-size:13px; white-space:nowrap; }
@@ -205,7 +202,7 @@ h2 { max-width:1100px; font-size:clamp(26px,3vw,43px); }
   .snippet { font-size:23px; }
   .llm-node { width:130px; }
   .llm-prompt { width:240px; }
-  .feedback-brain-wrap { --feedback-canvas-height:210px; }
+  .feedback-brain-wrap { height:210px; }
 }
 @media(max-width:700px) {
   :root { --diagram-height:160px; }
@@ -232,8 +229,7 @@ h2 { max-width:1100px; font-size:clamp(26px,3vw,43px); }
   .generation-node,.generation-prompt { left:83%; }
   .generation-output { left:0; width:100%; font-size:14px; line-height:1.65; }
   .activation-legend { font-size:10px; }
-  .feedback-legend { left:auto; right:max(0px,calc((100% - 180px) / 2)); transform:none; width:180px; }
-  .feedback-brain-wrap { --feedback-canvas-height:140px; left:58%; width:42%; }
+  .feedback-brain-wrap { left:58%; width:42%; height:140px; }
   .feedback-caption { font-size:11px; }
   .feedback-rsc text { font-size:10px; }
   .panel.paper-panel { gap:28px; padding:46px 22px; }
@@ -268,8 +264,8 @@ h2 { max-width:1100px; font-size:clamp(26px,3vw,43px); }
   .llm-node { width:84px; }
   .llm-prompt { font-size:13px; }
   .llm-explanation { font-size:var(--explanation-font,20px); }
-  .generation-output { font-size:12px; line-height:1.5; }
-  .feedback-brain-wrap { --feedback-canvas-height:108px; }
+  .generation-output { font-size:12px; }
+  .feedback-brain-wrap { height:108px; }
   .panel.paper-panel { gap:18px; }
   .paper-details { gap:8px; }
   .paper-title { font-size:18px; line-height:1.25; margin-bottom:2px; }

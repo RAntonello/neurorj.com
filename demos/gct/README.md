@@ -19,13 +19,6 @@ underlines draw from left to right beneath the place words in the 14 location
 snippets; the ranked list and box stay in place. Scrolling backward retracts
 the underlines. Reduced-motion mode shows them without the drawing animation.
 These word annotations are editorial, not model feature-attribution scores.
-Compact frameless color keys label blue as “Less activation” and red as “More
-activation” beneath the interactive brain, above the ranked list (including the
-location-pattern panel), and beneath the paragraph's feedback brain. Each key
-uses its associated display's endpoint colors without numerical ticks, since the
-ranking and brain maps have different scales. They fade with the relevant panels;
-the ranking key stays outside the scrollable list. Mobile spacing keeps the keys
-clear of controls, connector arrows, and the delayed scroll hint.
 On the eighth panel, the lower-ranked snippets and encoding-model box fade away.
 The same top ten snippets expand into inputs to a separately labeled LLM, shown
 as three offset mesh layers with fine nodes and connections. The prompt “What
@@ -162,6 +155,10 @@ all 800 patch outputs per snippet, and the computed RSC scores. Display smoothin
 does not enter this calculation.
 
 ## Playback
+
+A compact frameless color key beneath the interactive brain labels blue as
+“Less activation” and red as “More activation.” It appears only on the second
+panel, with space reserved around the playback controls and instruction.
 
 Ten original conversational transcripts live in `snippets.json`. Selecting a
 snippet plays its local MP3 and animates the corresponding model prediction.
