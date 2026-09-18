@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ffffff">
   <title>Language encoding models · Generative causal testing</title>
-  <link rel="stylesheet" href="tutorial.css?v=d53639164a">
-  <script defer src="tutorial.js?v=f6c3d4df3a"></script>
+  <link rel="stylesheet" href="tutorial.css?v=d169f63669">
+  <script defer src="tutorial.js?v=6618158a5c"></script>
   <script defer src="paper-box.js"></script>
   <script defer src="paragraph-audio.js"></script>
 </head>
@@ -77,6 +77,9 @@
         </div>
       </section>
         <div class="corpus-scene" id="corpus-scene">
+          <div class="activation-legend ranking-legend" id="ranking-legend" role="img" aria-label="Blue means less activation; red means more activation." aria-hidden="true">
+            <span class="activation-legend-scale" aria-hidden="true"></span><span>Less activation</span><span>More activation</span>
+          </div>
           <div class="corpus-cloud" id="corpus-cloud" role="img" aria-label="A dense cloud of text snippets, including descriptions of locations, flowing into the language encoding model.">
             <span data-corpus-id="location-01" data-topic="location">beside the lake</span>
             <span data-corpus-id="everyday-01" data-topic="everyday">she put the kettle on</span>
@@ -182,6 +185,9 @@
         <div class="feedback-brain-wrap" id="feedback-brain-wrap">
           <canvas class="brain" id="feedback-brain" tabindex="-1" role="img" aria-label="Rotatable model prediction for the generated paragraph, synchronized with its audio. Retrosplenial cortex is outlined and labeled RSC. Drag or use arrow keys to rotate. Home resets the view."></canvas>
           <svg class="feedback-rsc" id="feedback-rsc" aria-hidden="true"><path id="feedback-rsc-leader"/><text id="feedback-rsc-label">RSC</text></svg>
+          <div class="activation-legend feedback-legend" id="feedback-legend" role="img" aria-label="Blue means less activation; red means more activation.">
+            <span class="activation-legend-scale" aria-hidden="true"></span><span>Less activation</span><span>More activation</span>
+          </div>
         </div>
         <span class="feedback-caption" id="feedback-caption">Evaluate <em>in vivo</em> response</span>
       </div>
@@ -214,6 +220,9 @@
         <div class="brain-side">
           <canvas id="response-brain" class="brain" tabindex="0" role="img" aria-label="Rotatable 3D brain showing the model’s prediction. Drag or use arrow keys to rotate. Home resets the view."></canvas>
           <svg class="rsc-overlay" id="rsc-overlay" aria-hidden="true"><path id="rsc-leader-left"/><path id="rsc-leader-right"/><text id="rsc-label" text-anchor="middle">RSC</text></svg>
+          <div class="activation-legend interactive-legend" id="interactive-legend" role="img" aria-label="Blue means less activation; red means more activation." aria-hidden="true">
+            <span class="activation-legend-scale" aria-hidden="true"></span><span>Less activation</span><span>More activation</span>
+          </div>
           <div class="playback-controls" id="playback-controls" hidden>
             <button id="play-pause" type="button" aria-label="Pause audio and animation" title="Pause">Ⅱ</button>
             <button id="mute-audio" class="sound-toggle" type="button" aria-label="Mute audio" aria-pressed="false" title="Mute audio"><svg class="sound-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4Z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/><path class="sound-cross" d="M4 4 20 20M20 4 4 20" stroke-width="1.8"/></svg></button>

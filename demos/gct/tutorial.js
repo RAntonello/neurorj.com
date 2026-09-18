@@ -62,6 +62,8 @@
     panels[11].style.opacity = clamp((closingBlend - .45) / .55);
     stage.style.setProperty('--corpus-opacity', corpusBlend * llmContextOpacity);
     stage.style.setProperty('--rank-progress', rankBlend);
+    stage.style.setProperty('--interactive-legend-opacity', blend * (1 - boxBlend));
+    stage.style.setProperty('--ranking-legend-opacity', clamp((rankBlend - .58) / .42) * (1 - clamp(llmBlend / .35)));
     stage.style.setProperty('--location-progress', reduced.matches ? Number(locationBlend >= .5) : locationBlend * locationBlend * (3 - 2 * locationBlend));
     stage.style.setProperty('--encoding-box-opacity', 1 - clamp(llmBlend / .4));
     stage.style.setProperty('--llm-opacity', clamp((llmBlend - .35) / .4) * closingOut);
@@ -77,6 +79,8 @@
     stage.style.setProperty('--brain-opacity', 1 - corpusBlend);
     $('model-description').style.opacity = clamp((progress - .0475) / .437);
     const nextPanel = closingBlend >= .5 ? 11 : feedbackBlend >= .5 ? 10 : generationBlend >= .5 ? 9 : candidateBlend >= .5 ? 8 : llmBlend >= .5 ? 7 : locationBlend >= .5 ? 6 : rankBlend >= .5 ? 5 : corpusBlend >= .5 ? 4 : rscBlend >= .5 ? 3 : boxBlend >= .5 ? 2 : blend >= .5 ? 1 : 0;
+    $('interactive-legend').setAttribute('aria-hidden', String(nextPanel !== 1));
+    $('ranking-legend').setAttribute('aria-hidden', String(nextPanel !== 5 && nextPanel !== 6));
     if (nextPanel >= 2 && selectedPanel < 2) {
       pending = null; ++playRequest; audio.pause(); cleanup();
     }
@@ -615,12 +619,16 @@
       const longest = Math.max(...visible.map(entry => entry.offsetWidth / parseFloat(getComputedStyle(entry).fontSize)));
       const fontSize = Math.min(narrow ? (compact ? 11 : 13) : (stage.clientHeight <= 800 ? 17 : 19), (columnWidth - 34) / longest);
       const rowHeight = Math.max(compact ? 14 : narrow ? 17 : 21, fontSize * 1.35);
-      const rankTitleHeight = $('ranking-title').offsetHeight, rankGap = compact ? 24 : gap;
+      const rankLegendHeight = $('ranking-legend').offsetHeight, legendGap = compact ? 10 : 12;
+      const rankTitleHeight = $('ranking-title').offsetHeight, rankGap = (compact ? 24 : gap) + rankLegendHeight + legendGap;
       const fullHeight = rows * rowHeight;
-      const rankHeight = Math.min(fullHeight, Math.max(rowHeight * 3, stage.clientHeight - 70 - rankTitleHeight - rankGap));
-      const rankTop = Math.max(46, (stage.clientHeight - rankTitleHeight - rankGap - rankHeight) / 2);
+      const rankBottom = innerWidth > 370 && narrow ? 84 : 52;
+      const rankHeight = Math.min(fullHeight, Math.max(rowHeight * 3, stage.clientHeight - 46 - rankBottom - rankTitleHeight - rankGap));
+      const rankBlockHeight = rankTitleHeight + rankGap + rankHeight;
+      const rankTop = Math.max(46, Math.min((stage.clientHeight - rankBlockHeight) / 2, stage.clientHeight - rankBottom - rankBlockHeight));
       const rankCenter = rankTop + rankTitleHeight + rankGap + rankHeight / 2;
       stage.style.setProperty('--ranking-title-top', `${rankTop}px`);
+      stage.style.setProperty('--ranking-legend-top', `${-rankHeight / 2 - rankLegendHeight - legendGap}px`);
       const llmFontSize = Math.min(narrow ? (compact ? 16 : 18) : 25, (source.clientWidth * (narrow ? 1 : .62) - 40) / longest);
       const llmRowHeight = compact ? 22 : narrow ? 28 : llmFontSize * 1.55;
       const llmInputHeight = llmRowHeight * 10;
@@ -673,14 +681,16 @@
       $('generation-links').setAttribute('viewBox', `0 0 ${scene.clientWidth} ${generationHeight}`);
       const inputShiftX = -parseFloat(getComputedStyle($('llm-explanation')).left);
       const inputShiftY = generationCenter + generationPortY - llmCenter - llmOutputY;
+      $('feedback-brain-wrap').style.setProperty('--feedback-legend-space', `${$('feedback-legend').offsetHeight + 10}px`);
       const feedbackBrainHeight = $('feedback-brain-wrap').offsetHeight;
       const feedbackInputWidth = narrow ? scene.clientWidth * .52 : inputWidth;
       const feedbackRowHeight = Math.max(feedbackBrainHeight, inputHeight, narrow ? 0 : stimulusHeight);
       const feedbackLoopSpace = compact ? 36 : 44, feedbackRowGap = compact ? 28 : 36;
       const feedbackHeight = narrow ? feedbackLoopSpace + feedbackRowHeight + feedbackRowGap + stimulusHeight : feedbackRowHeight + 88;
       const feedbackTitleHeight = $('feedback-title').offsetHeight;
-      const feedbackTop = Math.max(46, (stage.clientHeight - feedbackTitleHeight - llmGap - feedbackHeight) / 2);
-      const feedbackCenter = feedbackTop + feedbackTitleHeight + llmGap + (narrow ? feedbackLoopSpace : 0) + feedbackRowHeight / 2;
+      const feedbackGap = compact && stage.clientHeight < 620 ? 10 : llmGap;
+      const feedbackTop = Math.max(46, (stage.clientHeight - feedbackTitleHeight - feedbackGap - feedbackHeight) / 2);
+      const feedbackCenter = feedbackTop + feedbackTitleHeight + feedbackGap + (narrow ? feedbackLoopSpace : 0) + feedbackRowHeight / 2;
       const feedbackStimulusY = narrow ? feedbackCenter + feedbackRowHeight / 2 + feedbackRowGap + stimulusHeight / 2 : feedbackCenter;
       const feedbackInputShiftY = feedbackCenter - llmCenter - llmOutputY;
       const stimulusShiftX = narrow ? 0 : -scene.clientWidth * .35;
@@ -896,7 +906,11 @@
     const compact = innerWidth <= 700 && innerHeight <= 730;
     const headingHeight = Math.max($('opening-title').offsetHeight, $('playground-title').offsetHeight);
     const gap = compact ? 6 : 12;
-    const copyHeight = Math.max($('model-description').offsetHeight, document.querySelector('.instruction').offsetHeight);
+    const baseWidth = parseFloat(getComputedStyle(model).gridTemplateColumns.split(' ').at(-1));
+    stage.style.setProperty('--interactive-brain-width', `${baseWidth}px`);
+    const legendSpace = $('interactive-legend').offsetHeight + 8;
+    stage.style.setProperty('--interactive-legend-space', `${legendSpace}px`);
+    const copyHeight = Math.max($('model-description').offsetHeight, document.querySelector('.instruction').offsetHeight + legendSpace);
     const sceneHeight = headingHeight + cloudHeight + model.offsetHeight + copyHeight + gap * 3;
     // Center one shared envelope for both panels, independently of scroll position.
     // Leave room for the continuation arrow on shorter screens.
@@ -921,7 +935,6 @@
     const titleTop = boxTop - $('black-box-title').offsetHeight - (compact ? 28 : 48);
     stage.style.setProperty('--black-box-title-top', `${Math.max(46, titleTop)}px`);
     const narrow = innerWidth <= 700;
-    const baseWidth = parseFloat(getComputedStyle(model).gridTemplateColumns.split(' ').at(-1));
     const width = narrow ? model.clientWidth - target.offsetWidth - 16 : Math.min(760, model.clientWidth * .67);
     const height = Math.min(340, Math.max(compact ? 132 : 180, width * .55));
     const rscTitleHeight = $('rsc-title').offsetHeight, rscGap = narrow ? 32 : 40;
