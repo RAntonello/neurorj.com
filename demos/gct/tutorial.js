@@ -16,6 +16,10 @@
   let shown;
   const audioCache = new Map();
 
+  function syncEncodingSignals() {
+    model.classList.toggle('is-signaling', progress < 2.6 && !reduced.matches && !document.hidden);
+  }
+
   function setControls() {
     const playing = !audio.paused && !audio.ended;
     $('play-pause').textContent = playing ? 'Ⅱ' : '▷';
@@ -125,6 +129,7 @@
       if (i === nextPanel) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
     });
     selectedPanel = nextPanel; scrollQueued = false;
+    syncEncodingSignals();
     syncBrainPresentation();
   }
   function positionDiagram() {
@@ -344,7 +349,7 @@
     $('error-message').textContent = 'The audio could not load. Please retry.';
     $('load-error').hidden = false;
   });
-  document.addEventListener('visibilitychange', () => { if (document.hidden) audio.pause(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) audio.pause(); syncEncodingSignals(); });
   reduced.addEventListener('change', () => { if (active) paintAt(audio.currentTime, true); });
   let drag, ignoreClickUntil = 0;
   function cleanup() {
@@ -832,6 +837,15 @@
   }));
   let cloudWidth = 0, cloudHeight = 0, cloudFrame = 0, cloudTime = 0;
   function layoutScene() {
+    // Wire and moving dash use the same path, just like the LLM connectors.
+    // Clip the trace at that path's endpoints, including its rounded caps.
+    document.querySelectorAll('.signal').forEach(signal => {
+      const width = signal.getBoundingClientRect().width;
+      const start = 1, end = Math.max(start, width - 4);
+      signal.querySelector('svg').setAttribute('viewBox', `0 0 ${width} 12`);
+      signal.querySelectorAll('.llm-wire,.llm-trace').forEach(path => path.setAttribute('d', `M${start},6 L${end},6`));
+      signal.querySelector('.signal-limit').setAttribute('width', end - start);
+    });
     const compact = innerWidth <= 700 && innerHeight <= 730;
     const headingHeight = Math.max($('opening-title').offsetHeight, $('playground-title').offsetHeight);
     const gap = compact ? 6 : 12;

@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ffffff">
   <title>Language encoding models · Generative causal testing</title>
-  <link rel="stylesheet" href="tutorial.css">
-  <script defer src="tutorial.js"></script>
+  <link rel="stylesheet" href="tutorial.css?v=a2cbc8dc3e">
+  <script defer src="tutorial.js?v=1fe4c2886c"></script>
   <script defer src="paper-box.js"></script>
   <script defer src="paragraph-audio.js"></script>
 </head>
@@ -188,12 +188,30 @@
       </div>
       <div class="model-diagram" id="shared-model" role="group" aria-label="Interactive language encoding model">
         <button class="example-language" id="hero-play" type="button" aria-label="Play the spoken example"><span class="example-copy">“We missed the last train, so we walked home along the river.”</span><span class="audio-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"><path class="audio-play" d="M5.75 3.5 12.75 8 5.75 12.5Z"/><path class="audio-pause" d="M6 4v8M10 4v8" stroke-width="1.5"/></svg></span></button>
-        <span class="signal" aria-hidden="true"><i></i></span>
+        <span class="signal" aria-hidden="true">
+          <svg focusable="false" style="--read-delay:0s">
+            <defs>
+              <marker id="encoding-input-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="signal-arrow" d="M1 1 7 4 1 7"/></marker>
+              <clipPath id="encoding-input-limit" clipPathUnits="userSpaceOnUse"><rect class="signal-limit" x="1" y="0" width="0" height="12"/></clipPath>
+            </defs>
+            <path class="llm-wire" marker-end="url(#encoding-input-arrow)"/>
+            <path class="llm-trace llm-connector-trace" pathLength="100" clip-path="url(#encoding-input-limit)"/>
+          </svg>
+        </span>
         <div class="drop-zone" id="drop-zone" role="group" aria-label="Drop a snippet into the encoding model">
           <div class="drop-halo" aria-hidden="true"></div>
           <div class="black-box interactive-box" aria-hidden="true"><img class="box-photo" src="assets/black-box.webp" alt="" width="640" height="640" draggable="false"></div>
         </div>
-        <span class="signal" aria-hidden="true"><i></i></span>
+        <span class="signal" aria-hidden="true">
+          <svg focusable="false" style="--read-delay:1.3s">
+            <defs>
+              <marker id="encoding-output-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="signal-arrow" d="M1 1 7 4 1 7"/></marker>
+              <clipPath id="encoding-output-limit" clipPathUnits="userSpaceOnUse"><rect class="signal-limit" x="1" y="0" width="0" height="12"/></clipPath>
+            </defs>
+            <path class="llm-wire" marker-end="url(#encoding-output-arrow)"/>
+            <path class="llm-trace llm-connector-trace" pathLength="100" clip-path="url(#encoding-output-limit)"/>
+          </svg>
+        </span>
         <div class="brain-side">
           <canvas id="response-brain" class="brain" tabindex="0" role="img" aria-label="Rotatable 3D brain showing the model’s prediction. Drag or use arrow keys to rotate. Home resets the view."></canvas>
           <svg class="rsc-overlay" id="rsc-overlay" aria-hidden="true"><path id="rsc-leader-left"/><path id="rsc-leader-right"/><text id="rsc-label" text-anchor="middle">RSC</text></svg>
