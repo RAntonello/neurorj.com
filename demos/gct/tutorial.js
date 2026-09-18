@@ -271,7 +271,10 @@
     if (feedbackBrain || feedbackLoading || feedbackError) return;
     feedbackLoading = true;
     try {
-      const { createFeedbackBrain } = await import('./feedback-brain.js');
+      const [{ createFeedbackBrain }, { loadParagraphPrediction, connectParagraphResponse }] = await Promise.all([
+        import('./feedback-brain.js?v=e9b36a466a'), import('./paragraph-response.js?v=ff6f4f5673')
+      ]);
+      const prediction = await loadParagraphPrediction();
       feedbackBrain = await createFeedbackBrain($('feedback-brain'), point => {
         const width = $('feedback-brain').clientWidth, height = $('feedback-brain').clientHeight;
         const labelX = Math.max(22, Math.min(width - 30, point.x - 28));
@@ -280,7 +283,8 @@
         $('feedback-rsc-label').setAttribute('x', labelX);
         $('feedback-rsc-label').setAttribute('y', labelY);
         $('feedback-rsc-leader').setAttribute('d', `M${labelX + 10},${labelY + 5} L${point.x},${point.y}`);
-      });
+      }, prediction);
+      connectParagraphResponse(feedbackBrain, prediction);
       feedbackBrain.controls.enabled = selectedPanel === 10;
       $('feedback-brain').dataset.ready = 'true';
       $('load-error').hidden = true;
@@ -816,7 +820,7 @@
         const r = element.getBoundingClientRect();
         return { left: r.left - svg.left, right: r.right - svg.left, top: r.top - svg.top, bottom: r.bottom - svg.top, x: r.left + r.width / 2 - svg.left, y: r.top + r.height / 2 - svg.top };
       };
-      const input = rect($('llm-explanation')), output = rect($('generation-output')), brain = rect($('feedback-brain'));
+      const input = rect($('llm-explanation')), output = rect($('generation-output')), brain = rect($('feedback-brain-wrap'));
       const lines = [...$('llm-explanation').children].map(rect);
       let stimulusPath, brainPath, returnPath, captionX, captionY;
       if (geometry.narrow) {

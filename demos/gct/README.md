@@ -52,7 +52,8 @@ published study or a live generation call. On mobile it appears below the model.
 The paragraph has compact Listen/Pause, mute, and seek controls. Its narration
 continues into the feedback panel, pauses when leaving the paragraph or hiding
 the tab, and shares the earlier demo's mute preference. It starts only on user
-request and does not animate an invented brain response.
+request. The feedback brain shows the encoding model's prediction for this exact
+paragraph, synchronized with the narration; no experimental response is implied.
 The heading introduces generating driving stimuli to test *in vivo*. Scrolling
 back restores the centered explanation and earlier diagram; reduced-motion mode
 changes positions directly and disables the pulses.
@@ -66,9 +67,15 @@ surface to expose RSC within its sulcus. The functional mask and vertex
 correspondence are unchanged. Independent positions, normals, and indices
 preserve the earlier brain's anatomy and unfolding topology. The return arrow
 reads “Evaluate *in vivo* response.”
-RSC is an anatomical highlight, not a measured activation for this illustrative
-paragraph. The diagram conveys the experimental workflow without inventing a
-measurement, score, or success outcome. Reduced motion disables traveling pulses.
+RSC remains marked by a thin charcoal contour with a white halo, independent of
+the response colors inside it. The contour follows the existing functional mask
+and the surface depth test, so it rotates with the brain. A persistent RSC callout
+identifies the region. This preview uses a model prediction, not the experimental
+response that the feedback loop proposes to test.
+The initial map is the whole-paragraph prediction. Playback and seeking show its
+word-level predictions, using the audio clock and the earlier demo's smoothing.
+Pause freezes the map; replay restarts it. Reduced motion keeps the whole-paragraph
+map static and disables traveling pulses. Leaving the panel stops rendering.
 The final panel fades out the full feedback diagram before revealing the user's
 closing statement, the paper title, all eight authors, equal-contribution and
 joint-supervision credits, its citation, and the original black-box image.
@@ -232,7 +239,21 @@ weights use Apache 2.0; these are synthetic voices and original demo transcripts
 `scripts/generate_paragraph_audio.py` regenerates `audio/travel-paragraph.mp3`
 directly from `#generation-text` in the page, with `af_heart` at the same speed and
 encoding settings. This 14.2-second narration is separate from the ten snippet
-predictions and timings; it has no model-response or measured-response data.
+predictions and timings. Its corresponding `paragraph-prediction.json` contains
+precomputed outputs of the same UTS03 GPT-2 layer 8 encoding model, with word
+centers aligned to the narration in `audio/travel-paragraph.json`. The source
+paragraph retains “São”; model input transliterates it to “Sao” before the demo's
+ASCII word normalization, preserving one spoken word per model frame. The exact
+input and preprocessing are recorded with the prediction. These are model predictions, not measured
+responses from the paper. `paragraph-response.js` applies the same reliability
+mask, temporal interpolation, and onset fade as the earlier examples; the shared
+brain renderer supplies surface smoothing. Audio alignment is for the tutorial's
+playback and does not simulate the hemodynamic delay of an fMRI measurement.
+After generating the audio timestamps, regenerate the prediction with
+`GCT_CDP_PORT=9223 node demos/gct/scripts/predict_paragraph.cjs` from the site root,
+using the same preview server and inference browser as the corpus script. The
+export records source hashes and unsmoothed area-weighted RSC scores for auditing;
+these scores do not alter the brain colors or the existing display scale.
 
 ## 3D anatomy
 

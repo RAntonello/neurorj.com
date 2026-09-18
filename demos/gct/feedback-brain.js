@@ -1,7 +1,7 @@
 import * as THREE from './vendor/three.module.js';
 import { BrainView, loadSurface } from './brain3d.js';
 
-export async function createFeedbackBrain(canvas, annotate) {
+export async function createFeedbackBrain(canvas, annotate, data) {
   const source = await loadSurface();
   // Open the sulci slightly so the functional RSC mask is visible from the
   // medial side. Vertex correspondence and the mask itself remain unchanged.
@@ -27,7 +27,7 @@ export async function createFeedbackBrain(canvas, annotate) {
   geometry.userData = { anatomy: source.userData.anatomy };
   const position = geometry.getAttribute('position'), bounds = new THREE.Box3(), vertex = new THREE.Vector3();
   for (let i = 0; i < leftVertices; i++) bounds.expandByPoint(vertex.fromBufferAttribute(position, i));
-  const view = new BrainView(canvas, geometry, {});
+  const view = new BrainView(canvas, geometry, data);
   bounds.getCenter(view.controls.target);
   view.camera.position.copy(view.controls.target).add(new THREE.Vector3(288, 20, 55));
   view.camera.lookAt(view.controls.target);
@@ -35,8 +35,27 @@ export async function createFeedbackBrain(canvas, annotate) {
   view.controls.update(); view.controls.saveState();
   const light = new THREE.DirectionalLight(0xffffff, 1.3);
   light.position.set(220, 100, 100); view.scene.add(light);
-  view.highlight.value = 1;
-  // This is an anatomical highlight, not a measured response to the example.
+  view.highlight.value = 0;
+  // Keep the model's response visible inside RSC. Trace the existing binary
+  // mask's interpolated 0.5 boundary with a fine dark stroke and white halo.
+  // Drawing in the surface shader uses the brain's own depth test, so the
+  // contour cannot show through the hemisphere when the viewer rotates it.
+  const responseShader = view.material.onBeforeCompile;
+  view.material.onBeforeCompile = (shader, renderer) => {
+    responseShader(shader, renderer);
+    shader.uniforms.rscContourScale = { value: view.renderer.getPixelRatio() };
+    shader.fragmentShader = 'uniform float rscContourScale;\n' + shader.fragmentShader;
+    shader.fragmentShader = shader.fragmentShader.replace('#include <opaque_fragment>', `
+      float rscDistance = abs(regionMask - .5) / max(fwidth(regionMask), .00001) / rscContourScale;
+      float rscHalo = 1. - smoothstep(.9, 1.55, rscDistance);
+      float rscStroke = 1. - smoothstep(.25, .75, rscDistance);
+      outgoingLight = mix(outgoingLight, vec3(.98), rscHalo * .96);
+      outgoingLight = mix(outgoingLight, vec3(.035), rscStroke * .96);
+      #include <opaque_fragment>
+    `);
+  };
+  view.material.customProgramCacheKey = () => 'feedback-rsc-contour-v1';
+  view.material.needsUpdate = true;
   const center = new THREE.Vector3();
   const mask = geometry.getAttribute('rscMask'); let count = 0;
   for (let i = 0; i < leftVertices; i++) if (mask.getX(i)) {
