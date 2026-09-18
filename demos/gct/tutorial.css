@@ -37,7 +37,7 @@ h2 { max-width:1100px; font-size:clamp(26px,3vw,43px); }
 .drop-zone.is-over .drop-halo { opacity:1; border-color:var(--accent); background:#c8876410; }
 .drop-zone.is-over .interactive-box { transform:scale(1.04); }
 .drop-zone.accepted .interactive-box { animation:accept .6s ease; }
-.brain-side { width:var(--brain-width,100%); height:var(--brain-height,100%); min-width:0; min-height:0; position:relative; justify-self:end; opacity:var(--brain-opacity,1); transform:translateY(var(--brain-shift-y,0px)); }
+.brain-side { --playback-lift:18px; width:var(--brain-width,100%); height:var(--brain-height,100%); min-width:0; min-height:0; position:relative; justify-self:end; opacity:var(--brain-opacity,1); transform:translateY(var(--brain-shift-y,0px)); }
 .rsc-overlay { position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none; opacity:var(--rsc-label-opacity,0); }
 .rsc-overlay path { fill:none; stroke:#c57a59; stroke-width:1; }
 .rsc-overlay text { font:14px var(--sans); fill:#a95632; }
@@ -47,7 +47,7 @@ h2 { max-width:1100px; font-size:clamp(26px,3vw,43px); }
 .activation-legend { position:absolute; left:50%; transform:translateX(-50%); display:grid; grid-template-columns:1fr 1fr; gap:5px 8px; width:min(180px,100%); color:#77717a; font:11px/1.3 var(--sans); pointer-events:none; }
 .activation-legend-scale { grid-column:1 / -1; height:4px; border-radius:2px; background:linear-gradient(90deg,var(--legend-cool,#3c83c4),#f5f3f2 50%,var(--legend-warm,#e86632)); }
 .activation-legend > :last-child { text-align:right; }
-.interactive-legend { top:calc(100% + 6px); width:min(180px,var(--interactive-brain-width,100%)); opacity:var(--interactive-legend-opacity,0); }
+.interactive-legend { top:calc(100% + 6px - var(--playback-lift)); width:min(180px,var(--interactive-brain-width,100%)); opacity:var(--interactive-legend-opacity,0); }
 #model-description { position:absolute; top:var(--copy-top); left:50%; transform:translateX(-50%); opacity:0; width:min(1100px,90%); font-size:clamp(26px,3vw,44px); }
 .next { position:absolute; bottom:18px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:7px; border:0; background:none; font-size:25px; color:#aaa; cursor:pointer; padding:0 18px; z-index:4; opacity:0; visibility:hidden; pointer-events:none; transition:opacity .35s,visibility 0s .35s; }
 .next.is-opening { top:var(--next-top); bottom:auto; }
@@ -169,7 +169,7 @@ h2 { max-width:1100px; font-size:clamp(26px,3vw,43px); }
 .corpus-stream { position:absolute; inset:0; pointer-events:none; }
 .corpus-flight { position:absolute; top:0; left:0; width:max-content; white-space:nowrap; font-family:var(--serif); line-height:1.2; will-change:transform,opacity; }
 @keyframes corpus-drift { from { transform:translate(-2px,-2px); } to { transform:translate(var(--drift-x),var(--drift-y)); } }
-.playback-controls { position:absolute; bottom:0; left:50%; transform:translateX(-50%); display:flex; gap:15px; align-items:center; justify-content:center; height:30px; max-width:100%; width:max-content; opacity:var(--context-opacity,1); }
+.playback-controls { position:absolute; bottom:var(--playback-lift); left:50%; transform:translateX(-50%); display:flex; gap:15px; align-items:center; justify-content:center; height:30px; max-width:100%; width:max-content; opacity:var(--context-opacity,1); }
 .playback-controls button { border:0; background:none; font-size:18px; color:#777; cursor:pointer; padding:4px 8px; }
 .playback-controls input { width:130px; min-width:0; height:2px; accent-color:var(--accent); cursor:pointer; }
 .playback-controls .sound-toggle { display:flex; align-items:center; justify-content:center; flex:0 0 28px; padding:6px; }
@@ -229,6 +229,7 @@ h2 { max-width:1100px; font-size:clamp(26px,3vw,43px); }
   .generation-node,.generation-prompt { left:83%; }
   .generation-output { left:0; width:100%; font-size:14px; line-height:1.65; }
   .activation-legend { font-size:10px; }
+  .brain-side { --playback-lift:10px; }
   .feedback-brain-wrap { left:58%; width:42%; height:140px; }
   .feedback-caption { font-size:11px; }
   .feedback-rsc text { font-size:10px; }
@@ -265,6 +266,7 @@ h2 { max-width:1100px; font-size:clamp(26px,3vw,43px); }
   .llm-prompt { font-size:13px; }
   .llm-explanation { font-size:var(--explanation-font,20px); }
   .generation-output { font-size:12px; }
+  .brain-side { --playback-lift:6px; }
   .feedback-brain-wrap { height:108px; }
   .panel.paper-panel { gap:18px; }
   .paper-details { gap:8px; }
