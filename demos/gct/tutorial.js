@@ -71,6 +71,11 @@
     stage.style.setProperty('--context-opacity', 1 - boxBlend);
     stage.style.setProperty('--brain-opacity', 1 - corpusBlend);
     $('model-description').style.opacity = clamp((progress - .0475) / .437);
+    // The scroll cue clears before the opening's lower text appears.
+    const showScrollCue = progress < .045;
+    $('next').style.opacity = 1 - clamp(progress / .045);
+    $('next').inert = !showScrollCue;
+    $('next').setAttribute('aria-hidden', String(!showScrollCue));
     const nextPanel = closingBlend >= .5 ? 11 : feedbackBlend >= .5 ? 10 : generationBlend >= .5 ? 9 : candidateBlend >= .5 ? 8 : llmBlend >= .5 ? 7 : locationBlend >= .5 ? 6 : rankBlend >= .5 ? 5 : corpusBlend >= .5 ? 4 : rscBlend >= .5 ? 3 : boxBlend >= .5 ? 2 : blend >= .5 ? 1 : 0;
     if (nextPanel >= 2 && selectedPanel < 2) {
       pending = null; ++playRequest; audio.pause(); cleanup();

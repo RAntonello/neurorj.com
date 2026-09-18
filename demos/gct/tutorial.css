@@ -45,7 +45,8 @@ h2 { max-width:1100px; font-size:clamp(26px,3vw,43px); }
 .brain { display:block; width:100%; height:100%; min-width:0; cursor:grab; touch-action:none; }
 .brain:active { cursor:grabbing; }
 #model-description { position:absolute; top:var(--copy-top); left:50%; transform:translateX(-50%); opacity:0; width:min(1100px,90%); font-size:clamp(26px,3vw,44px); }
-.next { position:absolute; top:var(--next-top); left:50%; transform:translateX(-50%); border:0; background:none; font-size:25px; color:#aaa; cursor:pointer; padding:0 18px; }
+.next { position:absolute; top:min(var(--next-top),calc(100% - 70px)); left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:7px; border:0; background:none; font-size:25px; color:#aaa; cursor:pointer; padding:0 18px; }
+.next-label { color:#767676; font-family:var(--sans); font-size:12px; letter-spacing:.02em; }
 .instruction { position:absolute; top:var(--copy-top); left:50%; transform:translateX(-50%); text-align:center; font-size:clamp(14px,1.2vw,17px); line-height:1.5; width:min(1130px,90%); margin:0; }
 .snippet-cloud { position:absolute; top:var(--cloud-top); left:50%; transform:translateX(-50%); width:min(1160px,90%); height:100px; }
 .snippet { position:absolute; top:0; left:0; border:0; background:transparent; padding:6px 5px; cursor:grab; font-family:var(--serif); font-size:25px; line-height:1.15; width:max-content; max-width:100%; white-space:nowrap; user-select:none; -webkit-user-select:none; touch-action:pan-y; will-change:transform; }
