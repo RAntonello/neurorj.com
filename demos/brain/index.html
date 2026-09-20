@@ -1,64 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>How does your brain respond to language? | Richard J. Antonello</title>
-
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/main.css" />
-    <style>
-      #text { width: 100%; box-sizing: border-box; font: inherit; padding: 8px; border: 1px solid #ccc; }
-      #brain { width: 100%; display: block; background: #fff; }
-      #status { color: #666; font-size: 14px; }
-      #legend { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #444; }
-      #legend canvas { width: 160px; height: 12px; border: 1px solid #ccc; }
-      button { font: inherit; padding: 6px 14px; }
-      .ex { font-size: 14px; }
-      .ex a { margin-right: 10px; }
-      #words span { padding: 1px 2px; border-radius: 2px; }
-      #words span.win { background: #fde9a8; }
-      #words span.cur { background: #f5b800; font-weight: bold; }
-      table.words { border-collapse: collapse; font-size: 14px; }
-      table.words td { padding: 2px 8px; border-bottom: 1px solid #eee; }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.29.0/dist/ort.min.js"></script>
-  </head>
-
-  <body>
-    <main>
-      <article>
-        <p><a href="/demos/">Back to demos</a> &middot; <a href="/">Homepage</a></p>
-        <hr />
-        <h1>How does your brain respond to language?</h1>
-        <p>
-          This demo runs a small language model, GPT-2, locally on your browser and predicts how one person's brain might respond to the sentence you type. Check out some of the listed examples or try out your own!
-        </p>
-        <p>
-          <textarea id="text" rows="3" placeholder="Type something and press Predict.">I went to Paris, then Rome, then New York, and ended up in Boston.</textarea>
-        </p>
-        <p>
-          <button id="go" disabled>Predict</button>
-          <span id="status">Loading model&hellip;</span>
-        </p>
-        <p class="ex" id="examples">
-          Try:
-        </p>
-        <p id="timeline" hidden>
-          <button id="play">&#9654; Play</button>
-          <input id="pos" type="range" min="0" max="0" value="0" style="width:60%;vertical-align:middle;">
-          <a href="#" id="whole">whole text</a>
-        </p>
-        <p id="words" style="line-height:1.8;"></p>
-        <canvas id="brain"></canvas>
-        <p id="legend">
-          <span>less than typical</span><canvas id="cbar"></canvas><span>more than typical</span>
-        </p>
-        <p id="caption" style="font-size:14px;color:#444;"></p>
-      </article>
-    </main>
-    <script src="tokenizer.js"></script>
-    <script src="demo.js"></script>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Explore how a language encoding model predicts brain responses. Try a sentence and watch its response unfold on a rotatable 3D brain.">
+  <title>How does your brain respond to language? | Richard J. Antonello</title>
+  <link rel="stylesheet" href="demo.css?v=fold-1">
+  <script type="module" src="demo.js?v=fold-1"></script>
+</head>
+<body>
+  <nav class="navigation" aria-label="Site navigation">
+    <a href="/demos/"><span aria-hidden="true">↖</span> Demos</a>
+  </nav>
+  <main>
+    <header class="intro">
+      <h1>How does your brain<br>respond to language?</h1>
+    </header>
+    <div class="explorer">
+      <section class="editor" aria-labelledby="text-label">
+        <label id="text-label" for="text">Text</label>
+        <div class="text-field">
+          <textarea id="text" rows="3" spellcheck="false" placeholder="Enter text">I went to Paris, then Rome, then New York, and ended up in Boston.</textarea>
+        </div>
+        <div class="editor-actions">
+          <button id="go" class="predict-button" type="button">Predict</button>
+        </div>
+        <div class="status-line">
+          <span id="status" role="status" aria-live="polite">Loading examples…</span>
+          <button id="retry" class="text-button" type="button" hidden>Retry</button>
+        </div>
+      </section>
+      <section class="examples" aria-labelledby="examples-label">
+        <h2 id="examples-label">Examples</h2>
+        <div id="examples" class="example-list"></div>
+      </section>
+      <section class="brain-panel" aria-label="Predicted brain response">
+        <div class="brain-visual" id="brain-visual" aria-busy="true">
+          <canvas id="brain" tabindex="0" role="img" aria-label="3D brain showing the predicted response. Drag to rotate, use the arrow keys, or press Home to reset the view."></canvas>
+          <span id="brain-loading" class="brain-loading" role="status">Loading brain…</span>
+          <button id="brain-retry" class="text-button brain-retry" type="button" hidden>Retry loading the brain</button>
+        </div>
+        <div class="view-controls">
+          <span id="view-status" role="status" aria-live="polite"></span>
+          <button id="fold" class="view-toggle" type="button" aria-label="Unfold the brain into a flatmap" disabled>Unfold</button>
+        </div>
+        <div class="response-controls" id="response-controls" inert>
+          <p id="readout" class="readout" aria-hidden="true"></p>
+          <div class="playback">
+            <button id="play" class="play-button" type="button" aria-label="Play the response" title="Play the response" aria-pressed="false">
+              <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.5 18 12l-9 5.5Z"/></svg>
+              <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6v12M16 6v12"/></svg>
+            </button>
+            <input id="pos" class="timeline" type="range" min="0" max="1" step="0.01" value="0" aria-label="Position in the text">
+            <button id="whole" class="text-button whole-button" type="button" aria-pressed="true">Whole text</button>
+          </div>
+          <div class="activation-legend" role="img" aria-label="Blue means less activation; red means more activation.">
+            <span class="legend-scale"></span>
+            <span>Less activation</span><span>More activation</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
 </html>
