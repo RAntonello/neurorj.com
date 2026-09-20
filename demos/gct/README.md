@@ -100,9 +100,10 @@ instant with reduced motion enabled. Touch opens the paper directly. No addition
 3D software, generated images, or animation downloads are required.
 Scrolling backward restores the feedback diagram and its interaction.
 Audio remains paused after leaving the playground.
-After 30 seconds of visible time on any panel except the last, a subtle
-“Scroll down” button fades in. Changing panels resets the timer; scrolling
-dismisses a visible hint, and time in a hidden tab does not count. Clicking the
+The opening “Scroll down” hint appears immediately and stays visible on that
+panel. On later panels except the last, it fades in after 30 seconds of visible
+time. Changing panels resets the timer; scrolling dismisses a visible later-panel
+hint, and time in a hidden tab does not count. Clicking the
 hint advances the storyboard, including the opening description. On small screens
 the opening hint uses its empty cloud space if the lower text leaves no room.
 Scrolling also reveals the opening description. The first two panels use the

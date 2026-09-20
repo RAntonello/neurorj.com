@@ -187,14 +187,15 @@
     }
     function startTimer() {
       if (timer || revealed || panel < 0 || panel === panels.length - 1 || document.hidden) return;
+      if (panel === 0) { revealHint(); return; }
       started = performance.now(); timer = setTimeout(revealHint, remaining);
     }
     function reset() {
       pauseTimer(); remaining = delay; revealed = false; display(false); startTimer();
     }
-    // Scroll within a slide still counts toward dwell time. Once the hint is
-    // visible, scrolling dismisses it and starts a fresh 30-second interval.
-    addEventListener('scroll', () => { if (revealed) reset(); }, { passive: true });
+    // Keep the opening cue visible. On later slides, scroll still counts toward
+    // dwell time; scrolling dismisses a visible hint and restarts its interval.
+    addEventListener('scroll', () => { if (revealed && panel !== 0) reset(); }, { passive: true });
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) { pauseTimer(); display(false); }
       else if (revealed) display(true);
