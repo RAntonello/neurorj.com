@@ -13,9 +13,9 @@ let playing = false, whole = true, position = 0, startedAt = 0, frameId = 0, wor
 let requestVersion = 0, inferenceBusy = false, edited = false, loadingExamples = false, loadingBrain = false;
 let retryAction = null;
 let changingView = false;
-// Comparison pins one whole-text prediction; the difference view subtracts it
-// from the current display frame, in the same signed units and color scale.
-let pinned = null, mode = 'current', awaitingComparison = false;
+// Comparison keeps one whole-text prediction as a baseline; the difference view
+// subtracts it from the current display frame, in the same signed units and color scale.
+let baseline = null, mode = 'current';
 const shown = new Float32Array(800);
 const cache = new Map();
 
@@ -32,6 +32,22 @@ function validateState(result) {
       !result.wordVals.every(validFrame)) throw Error('The response could not be read. Please try again.');
 }
 function inputMatches() { return !!state && normalized(input.value) === normalized(state.text); }
+function comparing() { return !!baseline && !!state && normalized(state.text) !== normalized(baseline.text); }
+function nameFor(text,exampleId) {
+  const example = presets?.examples.find(example => example.id === exampleId);
+  if (example) return example.label.replace(/\b\w/g,letter => letter.toUpperCase());
+  const words = text.trim().split(/\s+/);
+  return `“${words.slice(0,3).join(' ')}${words.length > 3 ? '…' : ''}”`;
+}
+function legendLabel(element,plain,name,className) {
+  if (!name) { element.textContent = plain; return; }
+  const span = document.createElement('span');
+  span.className = className; span.textContent = name;
+  element.replaceChildren('Stronger for ',span);
+}
+function setNames(selector,name,title) {
+  document.querySelectorAll(selector).forEach(element => { element.textContent = name; element.title = title; });
+}
 function updateControls() {
   $('go').disabled = inferenceBusy;
   const enabled = !!state && !!view && brainAvailable && inputMatches();
@@ -42,19 +58,30 @@ function updateControls() {
   play.title = playing ? 'Pause the response' : 'Play the response';
   $('whole').setAttribute('aria-pressed',String(whole));
   $('fold').disabled = !view || !brainAvailable || changingView;
-  const showingPinned = !!pinned && mode === 'pinned';
-  play.disabled = seek.disabled = $('whole').disabled = showingPinned;
+  const isComparing = comparing(), currentName = state ? nameFor(state.text,activeExample) : '';
+  play.disabled = seek.disabled = $('whole').disabled = isComparing && mode === 'baseline';
   $('pin').disabled = !enabled;
-  $('pin').hidden = !!pinned;
-  $('compare-panel').hidden = !pinned;
+  $('pin').hidden = !!baseline;
+  $('compare-panel').hidden = !baseline;
+  $('compare-note').hidden = isComparing;
+  $('compare-modes').hidden = !isComparing;
+  if (baseline) {
+    setNames('.name-baseline',baseline.name,baseline.text);
+    setNames('.name-current',currentName,state.text.trim());
+  }
   document.querySelectorAll('.mode-button').forEach(button => button.setAttribute('aria-pressed',String(button.dataset.mode === mode)));
-  const diff = !!pinned && mode === 'diff';
-  $('legend-low').textContent = diff ? 'Higher for pinned' : 'Less activation';
-  $('legend-high').textContent = diff ? 'Higher for this text' : 'More activation';
+  const diff = isComparing && mode === 'diff';
+  legendLabel($('legend-low'),'Less activation',diff && baseline.name,'name-baseline');
+  legendLabel($('legend-high'),'More activation',diff && currentName,'name-current');
   $('legend').setAttribute('aria-label',diff
-    ? 'Blue means the pinned text drives a stronger response; red means this text does.'
+    ? `Blue means ${baseline.name} drives a stronger response; red means ${currentName} does.`
     : 'Blue means less activation; red means more activation.');
-  document.querySelectorAll('.example-button').forEach(button => button.setAttribute('aria-pressed',String(button.dataset.example === activeExample && inputMatches())));
+  document.querySelectorAll('.example-button').forEach(button => {
+    const current = button.dataset.example === activeExample && inputMatches();
+    button.setAttribute('aria-pressed',String(current));
+    button.classList.toggle('is-baseline',!!baseline && button.dataset.example === baseline.exampleId);
+    button.classList.toggle('is-compared',isComparing && current);
+  });
 }
 function stop() {
   playing = false;
@@ -81,9 +108,9 @@ function updateReadout(time) {
 }
 function show(frame) {
   if (!view) return;
-  if (pinned && mode === 'pinned') { view.paint(pinned.wholeVals); return; }
-  if (pinned && mode === 'diff') {
-    for (let k = 0; k < 800; k++) shown[k] = frame[k] - pinned.wholeVals[k];
+  if (comparing() && mode === 'baseline') { view.paint(baseline.wholeVals); return; }
+  if (comparing() && mode === 'diff') {
+    for (let k = 0; k < 800; k++) shown[k] = frame[k] - baseline.wholeVals[k];
     view.paint(shown);
     return;
   }
@@ -112,9 +139,9 @@ function showWhole() {
   if (!state) return;
   stop(); whole = true; position = 0; wordIndex = -1;
   $('readout').classList.remove('is-visible');
-  if (pinned && mode === 'pinned') {
+  if (comparing() && mode === 'baseline') {
     const text = document.createElement('span');
-    text.textContent = pinned.text;
+    text.textContent = baseline.text;
     $('readout').replaceChildren(text);
     $('readout').classList.add('is-visible');
   }
@@ -141,15 +168,18 @@ function start() {
 function setState(result,text,exampleId = null) {
   validateState(result);
   stop();
+  const wasComparing = comparing();
   state = { ...result,text };
   // Preserve the read-only prediction exports used by the existing scientific
   // precomputation scripts, without exposing or eagerly loading a model session.
   window.__state = state;
   window.__lastVals = state.wholeVals;
   activeExample = exampleId;
-  // The first different text after pinning opens the difference view.
-  if (pinned && awaitingComparison && normalized(text) !== normalized(pinned.text)) {
-    mode = 'diff'; awaitingComparison = false;
+  // Moving from the baseline to a different text opens the difference view.
+  if (baseline) {
+    const nowComparing = normalized(text) !== normalized(baseline.text);
+    if (!nowComparing) mode = 'current';
+    else if (!wasComparing) mode = 'diff';
   }
   values = new Float32Array(800);
   seek.max = String(state.words.length*WORD_SECONDS);
@@ -314,9 +344,9 @@ $('brain').addEventListener('webglcontextrestored',() => {
   updateControls();
 });
 function setMode(next) {
-  if (!pinned || !state) return;
+  if (!comparing()) return;
   mode = next;
-  if (mode === 'pinned') {
+  if (mode === 'baseline') {
     showWhole();
   } else if (whole) {
     $('readout').classList.remove('is-visible');
@@ -329,22 +359,19 @@ function setMode(next) {
 }
 $('pin').addEventListener('click',() => {
   if (!state || !inputMatches()) return;
-  const example = presets?.examples.find(example => example.id === activeExample);
-  pinned = { text:state.text.trim(),wholeVals:Float32Array.from(state.wholeVals) };
-  $('pinned-text').textContent = example ? example.label : `“${pinned.text}”`;
-  $('pinned-text').classList.toggle('is-example',!!example);
-  $('pinned-text').title = pinned.text;
-  mode = 'current'; awaitingComparison = true;
+  baseline = {
+    text:state.text.trim(),exampleId:activeExample,name:nameFor(state.text,activeExample),
+    wholeVals:Float32Array.from(state.wholeVals)
+  };
+  mode = 'current';
   updateControls();
-  message('Now choose another example or predict new text to compare.');
   $('unpin').focus({preventScroll:true});
 });
 $('unpin').addEventListener('click',() => {
-  const wasPinnedView = mode === 'pinned';
-  pinned = null; mode = 'current'; awaitingComparison = false;
-  if (wasPinnedView) showWhole();
+  const wasBaselineView = comparing() && mode === 'baseline';
+  baseline = null; mode = 'current';
+  if (wasBaselineView) showWhole();
   else if (state) whole ? show(state.wholeVals) : paintAt(position);
-  if (/^Now choose another example/.test(status.textContent)) message('');
   updateControls();
   if (!$('pin').disabled) $('pin').focus({preventScroll:true});
 });

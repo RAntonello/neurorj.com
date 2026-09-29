@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#ffffff">
   <meta name="description" content="Explore how a language encoding model predicts brain responses. Try a sentence and watch its response unfold on a rotatable 3D brain.">
   <title>How does your brain respond to language? | Richard J. Antonello</title>
-  <link rel="stylesheet" href="demo.css?v=compare-1">
-  <script type="module" src="demo.js?v=compare-1"></script>
+  <link rel="stylesheet" href="demo.css?v=compare-2">
+  <script type="module" src="demo.js?v=compare-2"></script>
 </head>
 <body>
   <nav class="navigation" aria-label="Site navigation">
@@ -63,11 +63,11 @@
         <div class="compare">
           <button id="pin" class="text-button" type="button" disabled>Compare with another text</button>
           <div id="compare-panel" class="compare-panel" hidden>
-            <p class="pinned-line">Pinned <span id="pinned-text" class="pinned-text"></span></p>
-            <div class="compare-modes" role="group" aria-label="Brain display">
-              <button class="mode-button" type="button" data-mode="diff" aria-pressed="false">Difference</button>
-              <button class="mode-button" type="button" data-mode="current" aria-pressed="true">This text</button>
-              <button class="mode-button" type="button" data-mode="pinned" aria-pressed="false">Pinned</button>
+            <p id="compare-note" class="compare-note"><span class="name-baseline"></span> is the baseline. Choose another example or predict new text to compare with it.</p>
+            <div id="compare-modes" class="compare-modes" role="group" aria-label="Brain display">
+              <button class="mode-button" type="button" data-mode="diff" aria-pressed="false"><span class="name-current"></span> − <span class="name-baseline"></span></button>
+              <button class="mode-button" type="button" data-mode="current" aria-pressed="true"><span class="name-current"></span></button>
+              <button class="mode-button" type="button" data-mode="baseline" aria-pressed="false"><span class="name-baseline"></span></button>
             </div>
             <button id="unpin" class="text-button" type="button">Stop comparing</button>
           </div>
