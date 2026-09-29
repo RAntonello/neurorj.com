@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#ffffff">
   <meta name="description" content="Explore how a language encoding model predicts brain responses. Try a sentence and watch its response unfold on a rotatable 3D brain.">
   <title>How does your brain respond to language? | Richard J. Antonello</title>
-  <link rel="stylesheet" href="demo.css?v=fold-1">
-  <script type="module" src="demo.js?v=fold-1"></script>
+  <link rel="stylesheet" href="demo.css?v=compare-1">
+  <script type="module" src="demo.js?v=compare-1"></script>
 </head>
 <body>
   <nav class="navigation" aria-label="Site navigation">
@@ -55,9 +55,21 @@
             <input id="pos" class="timeline" type="range" min="0" max="1" step="0.01" value="0" aria-label="Position in the text">
             <button id="whole" class="text-button whole-button" type="button" aria-pressed="true">Whole text</button>
           </div>
-          <div class="activation-legend" role="img" aria-label="Blue means less activation; red means more activation.">
+          <div id="legend" class="activation-legend" role="img" aria-label="Blue means less activation; red means more activation.">
             <span class="legend-scale"></span>
-            <span>Less activation</span><span>More activation</span>
+            <span id="legend-low">Less activation</span><span id="legend-high">More activation</span>
+          </div>
+        </div>
+        <div class="compare">
+          <button id="pin" class="text-button" type="button" disabled>Compare with another text</button>
+          <div id="compare-panel" class="compare-panel" hidden>
+            <p class="pinned-line">Pinned <span id="pinned-text" class="pinned-text"></span></p>
+            <div class="compare-modes" role="group" aria-label="Brain display">
+              <button class="mode-button" type="button" data-mode="diff" aria-pressed="false">Difference</button>
+              <button class="mode-button" type="button" data-mode="current" aria-pressed="true">This text</button>
+              <button class="mode-button" type="button" data-mode="pinned" aria-pressed="false">Pinned</button>
+            </div>
+            <button id="unpin" class="text-button" type="button">Stop comparing</button>
           </div>
         </div>
       </section>

@@ -13,6 +13,10 @@ let playing = false, whole = true, position = 0, startedAt = 0, frameId = 0, wor
 let requestVersion = 0, inferenceBusy = false, edited = false, loadingExamples = false, loadingBrain = false;
 let retryAction = null;
 let changingView = false;
+// Comparison pins one whole-text prediction; the difference view subtracts it
+// from the current display frame, in the same signed units and color scale.
+let pinned = null, mode = 'current', awaitingComparison = false;
+const shown = new Float32Array(800);
 const cache = new Map();
 
 function message(text = '', error = false, retry = null) {
@@ -38,6 +42,18 @@ function updateControls() {
   play.title = playing ? 'Pause the response' : 'Play the response';
   $('whole').setAttribute('aria-pressed',String(whole));
   $('fold').disabled = !view || !brainAvailable || changingView;
+  const showingPinned = !!pinned && mode === 'pinned';
+  play.disabled = seek.disabled = $('whole').disabled = showingPinned;
+  $('pin').disabled = !enabled;
+  $('pin').hidden = !!pinned;
+  $('compare-panel').hidden = !pinned;
+  document.querySelectorAll('.mode-button').forEach(button => button.setAttribute('aria-pressed',String(button.dataset.mode === mode)));
+  const diff = !!pinned && mode === 'diff';
+  $('legend-low').textContent = diff ? 'Higher for pinned' : 'Less activation';
+  $('legend-high').textContent = diff ? 'Higher for this text' : 'More activation';
+  $('legend').setAttribute('aria-label',diff
+    ? 'Blue means the pinned text drives a stronger response; red means this text does.'
+    : 'Blue means less activation; red means more activation.');
   document.querySelectorAll('.example-button').forEach(button => button.setAttribute('aria-pressed',String(button.dataset.example === activeExample && inputMatches())));
 }
 function stop() {
@@ -63,13 +79,23 @@ function updateReadout(time) {
   seek.style.setProperty('--played',`${100 * time / +seek.max}%`);
   seek.setAttribute('aria-valuetext',`Word ${index+1} of ${state.words.length}: ${state.words[index]}`);
 }
+function show(frame) {
+  if (!view) return;
+  if (pinned && mode === 'pinned') { view.paint(pinned.wholeVals); return; }
+  if (pinned && mode === 'diff') {
+    for (let k = 0; k < 800; k++) shown[k] = frame[k] - pinned.wholeVals[k];
+    view.paint(shown);
+    return;
+  }
+  view.paint(frame);
+}
 function paintAt(time) {
   if (!view || !state) return;
   position = clamp(time,0,+seek.max);
   updateReadout(position);
   // Preserve the six-word predictions; blend signed values before coloring,
   // with the same temporal kernel used by the tutorial's display.
-  if (reduced.matches) { view.paint(state.wholeVals); return; }
+  if (reduced.matches) { show(state.wholeVals); return; }
   values.fill(0);
   let total = 0;
   for (let i = 0; i < state.wordVals.length; i++) {
@@ -80,15 +106,21 @@ function paintAt(time) {
     for (let k = 0; k < 800; k++) values[k] += state.wordVals[i][k] * weight;
   }
   if (total > 0) for (let k = 0; k < 800; k++) values[k] /= total;
-  view.paint(values);
+  show(values);
 }
 function showWhole() {
   if (!state) return;
   stop(); whole = true; position = 0; wordIndex = -1;
   $('readout').classList.remove('is-visible');
+  if (pinned && mode === 'pinned') {
+    const text = document.createElement('span');
+    text.textContent = pinned.text;
+    $('readout').replaceChildren(text);
+    $('readout').classList.add('is-visible');
+  }
   seek.value = 0; seek.style.setProperty('--played','0%');
   seek.setAttribute('aria-valuetext','Showing the response to the whole text');
-  view?.paint(state.wholeVals);
+  show(state.wholeVals);
   updateControls();
 }
 function tick(now) {
@@ -115,6 +147,10 @@ function setState(result,text,exampleId = null) {
   window.__state = state;
   window.__lastVals = state.wholeVals;
   activeExample = exampleId;
+  // The first different text after pinning opens the difference view.
+  if (pinned && awaitingComparison && normalized(text) !== normalized(pinned.text)) {
+    mode = 'diff'; awaitingComparison = false;
+  }
   values = new Float32Array(800);
   seek.max = String(state.words.length*WORD_SECONDS);
   showWhole();
@@ -149,7 +185,7 @@ async function prepareBrain() {
     brainAvailable = true;
     $('brain-loading').hidden = true;
     $('brain-visual').setAttribute('aria-busy','false');
-    if (state) view.paint(state.wholeVals);
+    if (state) show(state.wholeVals);
     syncViewControl();
     updateControls();
   } catch (error) {
@@ -277,6 +313,42 @@ $('brain').addEventListener('webglcontextrestored',() => {
   $('brain-visual').setAttribute('aria-busy','false');
   updateControls();
 });
+function setMode(next) {
+  if (!pinned || !state) return;
+  mode = next;
+  if (mode === 'pinned') {
+    showWhole();
+  } else if (whole) {
+    $('readout').classList.remove('is-visible');
+    show(state.wholeVals);
+  } else {
+    wordIndex = -1;
+    paintAt(position);
+  }
+  updateControls();
+}
+$('pin').addEventListener('click',() => {
+  if (!state || !inputMatches()) return;
+  const example = presets?.examples.find(example => example.id === activeExample);
+  pinned = { text:state.text.trim(),wholeVals:Float32Array.from(state.wholeVals) };
+  $('pinned-text').textContent = example ? example.label : `“${pinned.text}”`;
+  $('pinned-text').classList.toggle('is-example',!!example);
+  $('pinned-text').title = pinned.text;
+  mode = 'current'; awaitingComparison = true;
+  updateControls();
+  message('Now choose another example or predict new text to compare.');
+  $('unpin').focus({preventScroll:true});
+});
+$('unpin').addEventListener('click',() => {
+  const wasPinnedView = mode === 'pinned';
+  pinned = null; mode = 'current'; awaitingComparison = false;
+  if (wasPinnedView) showWhole();
+  else if (state) whole ? show(state.wholeVals) : paintAt(position);
+  if (/^Now choose another example/.test(status.textContent)) message('');
+  updateControls();
+  if (!$('pin').disabled) $('pin').focus({preventScroll:true});
+});
+document.querySelectorAll('.mode-button').forEach(button => button.addEventListener('click',() => setMode(button.dataset.mode)));
 play.addEventListener('click',start);
 $('whole').addEventListener('click',showWhole);
 seek.addEventListener('input',() => {
