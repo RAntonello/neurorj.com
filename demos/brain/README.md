@@ -5,6 +5,7 @@ The demo pairs editable text and eight saved examples with a rotatable 3D cortex
 ## Loading and files
 
 - `demo.js` manages examples, custom text, playback, and the display clock; `demo.css` styles the page.
+- `weights.bin` also feeds the GCT tutorial's black-box panel through an exported copy; rerun `demos/gct/scripts/export_weights.py` after changing it.
 - `examples.json` contains eight original example sentences, their normalized words, 141 word-level frames, eight whole-text predictions, and held-out correlations for all 800 patches.
 - `inference-client.js` creates `inference-worker.js` only when custom text needs a prediction. The worker loads the existing tokenizer, encoding weights, and approximately 97 MB GPT-2 model, then retains its session for subsequent requests. Loading and inference run outside the interface thread. Text stays in the browser; the pinned ONNX Runtime files load from jsDelivr.
 - `brain-view.js` reuses `../gct/brain-surface.bin.gz`, `../gct/surface-blend.bin.gz`, and the tutorial's vendored Three.js and OrbitControls. Unfolding assets load only on the first **Unfold** action; **Fold** restores the previous 3D orientation. Both views show the same prediction colors, without an ROI highlight. Keep these shared tutorial assets available when moving the demo.

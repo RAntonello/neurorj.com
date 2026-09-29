@@ -7,6 +7,9 @@ RSC responses, the location pattern among the top snippets, and an LLM explanati
 horizontal model diagram stays fixed through the first two panels while the
 surrounding copy and word cloud crossfade. On the third panel, its input, arrows,
 and playback controls fade out while the box and rotatable brain remain visible.
+As the heading fades in, the box's front face swings open to reveal the model's
+encoding weights, and a lens beside it magnifies a few of them with their values
+(see [Encoding weights](#encoding-weights)). The box closes again as the panel fades out.
 During the transition to the fourth panel, the same brain inflates and unfolds
 into its matching cortical flatmap, with RSC highlighted in both hemispheres.
 The box moves left to make room for the wider map. On the fifth panel, the
@@ -313,6 +316,34 @@ extent, and RSC centroids used for the callout. The binary contains a four-uint3
 header (magic `0x47435455`, vertex count, flat index count, left vertex count),
 float32 inflated xyz positions, float32 flat xyz positions, uint8 ROI membership,
 four-byte alignment padding, and uint32 flat triangle indices.
+
+## Encoding weights
+
+The black-box panel opens the box onto the encoding model's final linear step:
+614,400 weights from the brain demo's `weights.bin`, one row for each of 800
+cortical patches and one column for each of 768 GPT-2 layer 8 features. Each
+weight is divided by its patch's prediction scale, as the demo does when it
+predicts, so all rows share units; the lens shows these values. The caption's
+"final step" is this linear readout; GPT-2's own parameters are not counted.
+
+`scripts/export_weights.py` writes `encoding-weights.bin.gz` (16-bit integers,
+row-major, one shared scale, maximum error below 3e-6) and `encoding-weights.json`
+(shape, scale, value percentiles, and SHA-256 hashes of the source `weights.bin`
+and `meta.json`). Rerun it after changing the brain demo's weights. The page
+fetches the 1.1 MB asset in the background as the reader scrolls toward the
+playground.
+
+Inside the box, each device pixel shows the single weight at its center, a
+subsample of the matrix at screen resolution. Colors fade from near-black to warm
+(positive) or cool (negative), saturating at 0.04. The lens shows the weights as
+cells with values to three decimals and drifts slowly across the matrix; a ringed
+marker and leader show its position. The door reuses the front-face outline and
+hinge geometry of `paper-box.js` and opens to 104°; past edge-on, its plain inner
+side is shown. `weights-box.js` drives the door, lens, and caption from the
+panel's existing scroll fade, so the storyboard's timing is unchanged, and stops
+drawing the lens when the panel or tab is hidden. Reduced-motion mode opens the
+door without animation and holds the lens still. If the weights cannot load, the
+box still opens and the lens stays hidden.
 
 ## Box asset
 
