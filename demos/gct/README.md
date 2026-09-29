@@ -91,12 +91,12 @@ authorship notes follow the June 13, 2026 manuscript (v3). The citation says
 [the authors' announcement](https://www.microsoft.com/en-us/research/blog/understanding-the-brain-with-ai-driven-explanations-and-experiments/),
 verified September 17, 2026; no unverified journal volume, pages, or DOI are given.
 The final black box also links to the paper, with “Click the box to read the paper”
-beneath it. Below the citation, **Copy BibTeX** copies an entry that matches
-the details shown (journal and year, with the arXiv identifier, and no volume,
-pages, or DOI); if the clipboard is unavailable, `paper-actions.js` shows the
-entry selected for manual copying. **Try the model on your own text** links to
-the language-to-brain demo at `/demos/brain/`, as does a **Try your own text**
-link after the playground instruction. On hover or keyboard focus, its
+beneath it. A small copy icon after the citation copies a BibTeX entry that
+matches the details shown (journal and year, with the arXiv identifier, and no
+volume, pages, or DOI), briefly showing a checkmark; if the clipboard is
+unavailable, `paper-actions.js` shows the entry selected for manual copying. A
+**Try your own text** link after the playground instruction opens the
+language-to-brain demo at `/demos/brain/`. On hover or keyboard focus, its
 front face slowly swings a few degrees outward around its left edge, revealing
 a narrow white light that spills onto the stationary right side. `paper-box.js`
 reuses the photograph in SVG layers, preserving the original closed appearance.

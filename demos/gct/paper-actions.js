@@ -19,10 +19,11 @@
   button.addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(bibtex.textContent);
-      button.textContent = 'Copied';
+      button.classList.add('is-copied');
+      button.title = 'Copied';
       status.textContent = 'BibTeX copied to the clipboard.';
       clearTimeout(timer);
-      timer = setTimeout(() => { button.textContent = 'Copy BibTeX'; status.textContent = ''; }, 2000);
+      timer = setTimeout(() => { button.classList.remove('is-copied'); button.title = 'Copy BibTeX'; status.textContent = ''; }, 2000);
     } catch {
       showManualCopy();
     }
