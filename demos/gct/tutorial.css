@@ -157,6 +157,12 @@ h2 { max-width:1100px; font-size:clamp(26px,3vw,43px); }
 .paper-authors sup { font-size:.7em; line-height:0; }
 .paper-contributions { display:flex; flex-wrap:wrap; justify-content:center; gap:2px 20px; margin:0; color:#817b84; font-size:12px; line-height:1.5; }
 .paper-citation { margin:0; color:#625963; font-size:14px; line-height:1.5; }
+.paper-actions { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 12px; margin-top:4px; }
+.paper-action { display:inline-flex; align-items:center; min-height:34px; padding:7px 15px; border:1px solid #ded6d1; border-radius:18px; background:white; color:#665f68; font-size:12px; line-height:1.2; text-decoration:none; cursor:pointer; }
+.paper-action:hover,.paper-action:focus-visible { border-color:var(--accent); color:var(--accent); }
+.bibtex { width:min(640px,100%); max-height:150px; overflow:auto; margin:0; padding:10px 12px; border:1px solid #e7e2df; border-radius:6px; background:#faf8f7; color:#4d4850; font:11px/1.5 var(--mono); text-align:left; white-space:pre-wrap; }
+.demo-link { color:var(--accent); white-space:nowrap; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px; }
+.demo-link:hover { color:var(--ink); }
 .paper-box-action { display:flex; flex:none; flex-direction:column; align-items:center; }
 .paper-box-hint { margin:0; color:#756d77; font-size:13px; line-height:1.5; }
 .paper-box { position:relative; display:block; flex:none; width:200px; height:200px; color:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; isolation:isolate; }

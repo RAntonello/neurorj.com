@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ffffff">
   <title>Language encoding models · Generative causal testing</title>
-  <link rel="stylesheet" href="tutorial.css?v=5be8c138d5">
+  <link rel="stylesheet" href="tutorial.css?v=3d751532c7">
   <script defer src="tutorial.js?v=5156403610"></script>
   <script defer src="paper-box.js"></script>
+  <script defer src="paper-actions.js?v=63e60e6030"></script>
   <script defer src="paragraph-audio.js?v=0aaf04ed13"></script>
 </head>
 <body>
@@ -20,7 +21,7 @@
       </section>
       <section class="panel experiment-panel" id="playground" aria-labelledby="playground-title" aria-hidden="true" inert>
         <h2 id="playground-title">Language encoding models are useful tools for studying biological language processing, as they allow us to rapidly perform experiments that would be impractical in humans.</h2>
-        <p class="instruction">Drag a snippet into the box to see how the model predicts this person’s brain will respond.</p>
+        <p class="instruction">Drag a snippet into the box to see how the model predicts this person’s brain will respond. <a class="demo-link" href="/demos/brain/">Try your own text →</a></p>
         <div class="snippet-cloud" id="snippet-cloud" aria-label="Language snippets. Drag, click, or tap a snippet to activate the model.">
           <button class="snippet s1" data-snippet="places" type="button">The last train</button>
           <button class="snippet s2" data-snippet="food" type="button">More lemon</button>
@@ -68,6 +69,19 @@
           <p class="paper-authors"><span>Richard J. Antonello<sup>†</sup></span>, <span>Chandan Singh<sup>†</sup></span>, <span>Shailee Jain</span>, <span>Aliyah Hsu</span>, <span>Sihang Guo</span>, <span>Jianfeng Gao</span>, <span>Bin Yu<sup>‡</sup></span>, and <span>Alexander G. Huth<sup>‡</sup></span></p>
           <p class="paper-contributions"><span>† Equal contribution</span><span>‡ Joint supervision</span></p>
           <p class="paper-citation"><cite>Nature Neuroscience</cite> (accepted, 2026)</p>
+          <div class="paper-actions">
+            <button class="paper-action" id="copy-bibtex" type="button">Copy BibTeX</button>
+            <a class="paper-action" href="/demos/brain/">Try the model on your own text →</a>
+          </div>
+          <p class="sr-only" id="copy-status" role="status" aria-live="polite"></p>
+          <pre class="bibtex" id="bibtex" hidden>@article{antonello2026generative,
+  title   = {Generative causal testing to bridge data-driven models and scientific theories in language neuroscience},
+  author  = {Antonello, Richard J. and Singh, Chandan and Jain, Shailee and Hsu, Aliyah and Guo, Sihang and Gao, Jianfeng and Yu, Bin and Huth, Alexander G.},
+  journal = {Nature Neuroscience},
+  year    = {2026},
+  note    = {Accepted. arXiv:2410.00812},
+  url     = {https://arxiv.org/abs/2410.00812}
+}</pre>
         </div>
         <div class="paper-box-action">
           <a class="paper-box" id="paper-box" href="https://arxiv.org/abs/2410.00812" target="_blank" rel="noopener" aria-label="Read the paper: Generative causal testing to bridge data-driven models and scientific theories in language neuroscience">
