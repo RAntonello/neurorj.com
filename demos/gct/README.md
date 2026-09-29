@@ -5,7 +5,9 @@ language playground, the difficulty of understanding black boxes, retrosplenial
 cortex (RSC), feeding many text snippets into a model, and ranking its predicted
 RSC responses, the location pattern among the top snippets, and an LLM explanation. A single
 horizontal model diagram stays fixed through the first two panels while the
-surrounding copy and word cloud crossfade. On the third panel, its input, arrows,
+surrounding copy and word cloud crossfade. The playground's instruction ends with
+a **Try your own text** link, which opens the language-to-brain demo at
+`/demos/brain/` in a new tab, leaving the tutorial in place. On the third panel, its input, arrows,
 and playback controls fade out while the box and rotatable brain remain visible.
 As the heading fades in, the box's front face swings open to reveal the model's
 encoding weights, and a lens beside it magnifies a few of them with their values
@@ -97,10 +99,8 @@ The final black box also links to the paper, with “Click the box to read the p
 beneath it. A small copy icon after the citation copies a BibTeX entry that
 matches the details shown (journal and year, with the arXiv identifier, and no
 volume, pages, or DOI), briefly showing a checkmark; if the clipboard is
-unavailable, `paper-actions.js` shows the entry selected for manual copying. A
-**Try your own text** link after the playground instruction opens the
-language-to-brain demo at `/demos/brain/`. On hover or keyboard focus, its
-front face slowly swings a few degrees outward around its left edge, revealing
+unavailable, `paper-actions.js` shows the entry selected for manual copying.
+On hover or keyboard focus, the box's front face slowly swings a few degrees outward around its left edge, revealing
 a narrow white light that spills onto the stationary right side. `paper-box.js`
 reuses the photograph in SVG layers, preserving the original closed appearance.
 The motion reverses smoothly, stops rendering when settled or hidden, and becomes
