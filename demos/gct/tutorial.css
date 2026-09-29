@@ -178,7 +178,7 @@ h2 { max-width:1100px; font-size:clamp(26px,3vw,43px); }
 .weights-leader-halo { stroke:rgba(255,255,255,.9); stroke-width:3.4px; }
 .weights-lens { position:absolute; top:0; left:0; width:172px; height:172px; border-radius:50%; overflow:hidden; background:#101012; box-shadow:0 0 0 1.5px #fff,0 0 0 2.5px #cdc4bf,0 12px 30px -14px rgba(40,25,20,.5); opacity:0; }
 .weights-lens canvas { display:block; width:100%; height:100%; }
-.weights-caption { position:absolute; top:70svh; opacity:0; left:50%; transform:translateX(-50%); width:min(620px,90%); margin:0; text-align:center; font-size:clamp(14px,1.2vw,17px); line-height:1.5; color:#58535e; }
+.weights-caption { position:absolute; top:70svh; opacity:0; left:50%; transform:translateX(-50%); width:min(620px,90%); margin:0; text-align:center; font-size:clamp(14px,1.2vw,17px); line-height:1.5; color:#58535e; text-wrap:balance; }
 .paper-box-action { display:flex; flex:none; flex-direction:column; align-items:center; }
 .paper-box-hint { margin:0; color:#756d77; font-size:13px; line-height:1.5; }
 .paper-box { position:relative; display:block; flex:none; width:200px; height:200px; color:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; isolation:isolate; }

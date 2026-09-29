@@ -323,8 +323,9 @@ The black-box panel opens the box onto the encoding model's final linear step:
 614,400 weights from the brain demo's `weights.bin`, one row for each of 800
 cortical patches and one column for each of 768 GPT-2 layer 8 features. Each
 weight is divided by its patch's prediction scale, as the demo does when it
-predicts, so all rows share units; the lens shows these values. The caption's
-"final step" is this linear readout; GPT-2's own parameters are not counted.
+predicts, so all rows share units; the lens shows these values. The caption
+describes language encoding models in general, so it gives no counts; these
+dimensions are specific to the demo model.
 
 `scripts/export_weights.py` writes `encoding-weights.bin.gz` (16-bit integers,
 row-major, one shared scale, maximum error below 3e-6) and `encoding-weights.json`
