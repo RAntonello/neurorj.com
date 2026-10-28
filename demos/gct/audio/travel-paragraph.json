@@ -1,0 +1,207 @@
+{
+  "src": "audio/travel-paragraph.mp3",
+  "text": "We took the train from Lisbon to Porto and walked from São Bento station down to the Douro River. The next morning, we headed north to Braga, then crossed into Spain and spent the evening in Santiago de Compostela.",
+  "voice": "af_heart",
+  "speed": 0.96,
+  "duration": 14.225,
+  "sampleRate": 24000,
+  "sha256": "34c2545ecf9da3d500b7854ebaa233dd6b6cbfad784a4380b2548eeadda0ad59",
+  "timingSource": "Kokoro 0.9.4 predicted phoneme durations, reassembled into original spoken words",
+  "words": [
+    {
+      "word": "We",
+      "start": 0.25,
+      "end": 0.35
+    },
+    {
+      "word": "took",
+      "start": 0.35,
+      "end": 0.55
+    },
+    {
+      "word": "the",
+      "start": 0.55,
+      "end": 0.6625
+    },
+    {
+      "word": "train",
+      "start": 0.6625,
+      "end": 1.125
+    },
+    {
+      "word": "from",
+      "start": 1.125,
+      "end": 1.3375
+    },
+    {
+      "word": "Lisbon",
+      "start": 1.3375,
+      "end": 1.775
+    },
+    {
+      "word": "to",
+      "start": 1.775,
+      "end": 1.9
+    },
+    {
+      "word": "Porto",
+      "start": 1.9,
+      "end": 2.6
+    },
+    {
+      "word": "and",
+      "start": 2.6,
+      "end": 2.7625
+    },
+    {
+      "word": "walked",
+      "start": 2.7625,
+      "end": 3.125
+    },
+    {
+      "word": "from",
+      "start": 3.125,
+      "end": 3.35
+    },
+    {
+      "word": "São",
+      "start": 3.35,
+      "end": 3.65
+    },
+    {
+      "word": "Bento",
+      "start": 3.65,
+      "end": 4.075
+    },
+    {
+      "word": "station",
+      "start": 4.075,
+      "end": 4.6125
+    },
+    {
+      "word": "down",
+      "start": 4.6125,
+      "end": 4.975
+    },
+    {
+      "word": "to",
+      "start": 4.975,
+      "end": 5.075
+    },
+    {
+      "word": "the",
+      "start": 5.075,
+      "end": 5.1875
+    },
+    {
+      "word": "Douro",
+      "start": 5.1875,
+      "end": 5.575
+    },
+    {
+      "word": "River.",
+      "start": 5.575,
+      "end": 6.6125
+    },
+    {
+      "word": "The",
+      "start": 6.6125,
+      "end": 6.725
+    },
+    {
+      "word": "next",
+      "start": 6.725,
+      "end": 7.025
+    },
+    {
+      "word": "morning,",
+      "start": 7.025,
+      "end": 7.75
+    },
+    {
+      "word": "we",
+      "start": 7.75,
+      "end": 7.9
+    },
+    {
+      "word": "headed",
+      "start": 7.9,
+      "end": 8.225
+    },
+    {
+      "word": "north",
+      "start": 8.225,
+      "end": 8.525
+    },
+    {
+      "word": "to",
+      "start": 8.525,
+      "end": 8.625
+    },
+    {
+      "word": "Braga,",
+      "start": 8.625,
+      "end": 9.45
+    },
+    {
+      "word": "then",
+      "start": 9.45,
+      "end": 9.6875
+    },
+    {
+      "word": "crossed",
+      "start": 9.6875,
+      "end": 10.0625
+    },
+    {
+      "word": "into",
+      "start": 10.0625,
+      "end": 10.2875
+    },
+    {
+      "word": "Spain",
+      "start": 10.2875,
+      "end": 11.025
+    },
+    {
+      "word": "and",
+      "start": 11.025,
+      "end": 11.175
+    },
+    {
+      "word": "spent",
+      "start": 11.175,
+      "end": 11.4375
+    },
+    {
+      "word": "the",
+      "start": 11.4375,
+      "end": 11.5625
+    },
+    {
+      "word": "evening",
+      "start": 11.5625,
+      "end": 12.025
+    },
+    {
+      "word": "in",
+      "start": 12.025,
+      "end": 12.175
+    },
+    {
+      "word": "Santiago",
+      "start": 12.175,
+      "end": 12.825
+    },
+    {
+      "word": "de",
+      "start": 12.825,
+      "end": 12.925
+    },
+    {
+      "word": "Compostela.",
+      "start": 12.925,
+      "end": 14.125
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "rows": 800,
+  "columns": 768,
+  "layout": "int16 little-endian, row-major; value = stored * scale",
+  "scale": 5.641404497763178e-06,
+  "maxAbsoluteError": 2.82070018865245e-06,
+  "rowsAre": "cortical patches of the brain demo encoding model",
+  "columnsAre": "GPT-2 layer 8 features",
+  "values": "ridge weight divided by the patch prediction scale, as applied by the demo",
+  "absolutePercentiles": {
+    "50": 0.010314433523441455,
+    "90": 0.02586564394663168,
+    "99": 0.04323094382534992
+  },
+  "sourceSha256": {
+    "weights.bin": "5e9141f1c2e02dd71e05e20468a13dc24747516cbf2ed06d88e7f2a6f56d122a",
+    "meta.json": "09f17ef54057dbbc5b1a9e02094f9a10695a7e39fb8cc3c2d29203789ab223ca"
+  }
+}

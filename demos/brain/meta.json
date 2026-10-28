@@ -1,0 +1,13 @@
+{
+ "K": 800,
+ "D": 768,
+ "layer": 8,
+ "model": "gpt2_layer8_int8.onnx",
+ "model_mb": 97,
+ "corr_min": 0.1,
+ "n_train_stories": 24,
+ "voxel_corr_mean": 0.0763,
+ "patch_corr_max": 0.519,
+ "n_patches_shown": 446,
+ "model_bytes": 96923170
+}

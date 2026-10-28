@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Explore how a language encoding model predicts brain responses. Try a sentence and watch its response unfold on a rotatable 3D brain.">
+  <title>How does your brain respond to language? | Richard J. Antonello</title>
+  <link rel="stylesheet" href="demo.css?v=compare-2">
+  <script type="module" src="demo.js?v=compare-2"></script>
+</head>
+<body>
+  <nav class="navigation" aria-label="Site navigation">
+    <a href="/demos/"><span aria-hidden="true">↖</span> Demos</a>
+  </nav>
+  <main>
+    <header class="intro">
+      <h1>How does your brain<br>respond to language?</h1>
+    </header>
+    <div class="explorer">
+      <section class="editor" aria-labelledby="text-label">
+        <label id="text-label" for="text">Text</label>
+        <div class="text-field">
+          <textarea id="text" rows="3" spellcheck="false" placeholder="Enter text">I went to Paris, then Rome, then New York, and ended up in Boston.</textarea>
+        </div>
+        <div class="editor-actions">
+          <button id="go" class="predict-button" type="button">Predict</button>
+        </div>
+        <div class="status-line">
+          <span id="status" role="status" aria-live="polite">Loading examples…</span>
+          <button id="retry" class="text-button" type="button" hidden>Retry</button>
+        </div>
+      </section>
+      <section class="examples" aria-labelledby="examples-label">
+        <h2 id="examples-label">Examples</h2>
+        <div id="examples" class="example-list"></div>
+      </section>
+      <section class="brain-panel" aria-label="Predicted brain response">
+        <div class="brain-visual" id="brain-visual" aria-busy="true">
+          <canvas id="brain" tabindex="0" role="img" aria-label="3D brain showing the predicted response. Drag to rotate, use the arrow keys, or press Home to reset the view."></canvas>
+          <span id="brain-loading" class="brain-loading" role="status">Loading brain…</span>
+          <button id="brain-retry" class="text-button brain-retry" type="button" hidden>Retry loading the brain</button>
+        </div>
+        <div class="view-controls">
+          <span id="view-status" role="status" aria-live="polite"></span>
+          <button id="fold" class="view-toggle" type="button" aria-label="Unfold the brain into a flatmap" disabled>Unfold</button>
+        </div>
+        <div class="response-controls" id="response-controls" inert>
+          <p id="readout" class="readout" aria-hidden="true"></p>
+          <div class="playback">
+            <button id="play" class="play-button" type="button" aria-label="Play the response" title="Play the response" aria-pressed="false">
+              <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.5 18 12l-9 5.5Z"/></svg>
+              <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6v12M16 6v12"/></svg>
+            </button>
+            <input id="pos" class="timeline" type="range" min="0" max="1" step="0.01" value="0" aria-label="Position in the text">
+            <button id="whole" class="text-button whole-button" type="button" aria-pressed="true">Whole text</button>
+          </div>
+          <div id="legend" class="activation-legend" role="img" aria-label="Blue means less activation; red means more activation.">
+            <span class="legend-scale"></span>
+            <span id="legend-low">Less activation</span><span id="legend-high">More activation</span>
+          </div>
+        </div>
+        <div class="compare">
+          <button id="pin" class="text-button" type="button" disabled>Compare with another text</button>
+          <div id="compare-panel" class="compare-panel" hidden>
+            <p id="compare-note" class="compare-note"><span class="name-baseline"></span> is the baseline. Choose another example or predict new text to compare with it.</p>
+            <div id="compare-modes" class="compare-modes" role="group" aria-label="Brain display">
+              <button class="mode-button" type="button" data-mode="diff" aria-pressed="false"><span class="name-current"></span> − <span class="name-baseline"></span></button>
+              <button class="mode-button" type="button" data-mode="current" aria-pressed="true"><span class="name-current"></span></button>
+              <button class="mode-button" type="button" data-mode="baseline" aria-pressed="false"><span class="name-baseline"></span></button>
+            </div>
+            <button id="unpin" class="text-button" type="button">Stop comparing</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
