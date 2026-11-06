@@ -115,6 +115,7 @@
         max-width: 840px;
         margin: 0 auto;
         padding: var(--sky-pad, 76px) 20px 64px;
+        transition: opacity 1.6s ease;
       }
 
       .hero {
@@ -425,6 +426,255 @@
         color: var(--faint);
       }
 
+      /* ---------- the planets ---------- */
+      .orrery {
+        margin: 0 0 8px;
+      }
+
+      .orb-stage {
+        position: relative;
+        width: 100%;
+        height: 480px;
+      }
+
+      .orb-stage canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .moments {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        max-width: 640px;
+        margin: -10px auto 0;
+        touch-action: pan-y;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+
+      .moments-line {
+        position: absolute;
+        left: 30px;
+        right: 30px;
+        top: 17px;
+        height: 1px;
+        background: var(--line);
+      }
+
+      .moments-fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, var(--rose), var(--sky));
+        box-shadow: 0 0 10px rgba(124, 196, 255, 0.35);
+        transition: width 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+
+      .moments.scrubbing .moments-fill {
+        transition: none;
+      }
+
+      .moment {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 9px;
+        width: 60px;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .moment .moon {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.4s ease;
+      }
+
+      .moment:hover .moon {
+        transform: scale(1.1);
+      }
+
+      .moment.on .moon {
+        transform: scale(1.2);
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28), 0 0 26px rgba(255, 255, 255, 0.3);
+      }
+
+      .moment:focus-visible {
+        outline: none;
+      }
+
+      .moment:focus-visible .moon {
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.7);
+      }
+
+      .moment .d {
+        font: 500 10.5px/1 var(--sans);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--faint);
+        white-space: nowrap;
+        transition: color 0.3s ease;
+      }
+
+      .moment.on .d {
+        color: var(--text);
+      }
+
+      .moment-info {
+        margin-top: 26px;
+        text-align: center;
+        transition: opacity 0.3s ease;
+      }
+
+      .moment-info.fade {
+        opacity: 0;
+      }
+
+      .moment-title {
+        margin: 0;
+        font: italic 500 clamp(24px, 3.6vw, 30px) / 1.2 var(--serif);
+      }
+
+      .moment-when {
+        margin: 8px 0 0;
+        font: 500 11px/1.4 var(--sans);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .moment-sky {
+        max-width: 620px;
+        margin: 12px auto 0;
+        font: italic 500 17px/1.55 var(--serif);
+        color: var(--muted);
+      }
+
+      .moment-ago {
+        margin: 8px 0 0;
+        font: 500 13px/1.4 var(--sans);
+        font-variant-numeric: tabular-nums;
+        color: var(--faint);
+        min-height: 1.4em;
+      }
+
+      @media (max-width: 680px) {
+        .orb-stage {
+          width: calc(100% + 40px);
+          margin-left: -20px;
+        }
+
+        .moment {
+          width: 50px;
+        }
+
+        .moments-line {
+          left: 25px;
+          right: 25px;
+        }
+
+        .moment .moon {
+          width: 30px;
+          height: 30px;
+        }
+
+        .moments-line {
+          top: 15px;
+        }
+
+        .moment .d {
+          font-size: 9.5px;
+        }
+      }
+
+      /* ---------- little secrets ---------- */
+      .note {
+        position: fixed;
+        left: 50%;
+        bottom: max(28px, 7vh);
+        z-index: 5;
+        max-width: min(640px, calc(100vw - 40px));
+        transform: translate(-50%, 14px);
+        opacity: 0;
+        text-align: center;
+        font: italic 500 clamp(18px, 2.6vw, 23px) / 1.4 var(--serif);
+        color: var(--text);
+        text-shadow: 0 0 18px rgba(255, 214, 170, 0.35), 0 2px 12px rgba(0, 0, 0, 0.6);
+        pointer-events: none;
+        transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+
+      .note.show {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+
+      .earth-note {
+        position: absolute;
+        z-index: 2;
+        width: max-content;
+        max-width: 280px;
+        transform: translate(-50%, 0);
+        text-align: center;
+        font: italic 500 15.5px/1.4 var(--serif);
+        color: var(--text);
+        text-shadow: 0 0 10px rgba(7, 10, 28, 1), 0 0 4px rgba(7, 10, 28, 1);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.45s ease;
+      }
+
+      .earth-note.show {
+        opacity: 1;
+      }
+
+      .earth-note .n {
+        display: block;
+        margin-bottom: 5px;
+        font: 500 10px/1 var(--sans);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--faint);
+      }
+
+      .moment.future {
+        width: 0;
+        opacity: 0;
+        overflow: hidden;
+        pointer-events: none;
+        transition: width 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.7s ease;
+      }
+
+      .moment.future.shown {
+        width: 60px;
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      html.uniting .page {
+        opacity: 0.05;
+        pointer-events: none;
+      }
+
+      @media (max-width: 680px) {
+        .moment.future.shown {
+          width: 50px;
+        }
+      }
+
       /* ---------- the question at the door ---------- */
       .gate {
         position: fixed;
@@ -630,6 +880,7 @@
     <div class="glow glow-a" aria-hidden="true"></div>
     <div class="glow glow-b" aria-hidden="true"></div>
     <canvas id="fx" aria-hidden="true"></canvas>
+    <div class="note" id="note" aria-live="polite"></div>
 
     <div class="gate" id="gate" role="dialog" aria-labelledby="gate-q">
       <form class="card gate-card" id="gate-form" autocomplete="off">
@@ -772,17 +1023,6 @@
           divider.className = "divider";
           waitClocks.append(lastSeen.el, divider, nextSeen.el);
 
-          const story = $("#story");
-          const storyClocks = Object.keys(EVENTS).filter((k) => k !== "lastSeen" && k !== "nextSeen").map((key, i) => {
-            const c = makeClock(EVENTS[key]);
-            const card = document.createElement("div");
-            card.className = "card reveal";
-            card.style.setProperty("--delay", 320 + i * 90 + "ms");
-            card.appendChild(c.el);
-            story.appendChild(card);
-            return c;
-          });
-
           const metAt = parseLocal(EVENTS.met.date);
           const SYNODIC_MS = 29.530588853 * 86400000;
           const REF_FULL_MOON = Date.UTC(2000, 0, 21, 4, 40); // a known full moon
@@ -835,7 +1075,6 @@
             const now = new Date();
             lastSeen.update(now);
             const r = nextSeen.update(now);
-            for (const c of storyClocks) c.update(now);
             updateProgress(now.getTime());
 
             const sinceMet = Math.max(0, Math.floor((now - metAt) / 1000));
@@ -897,30 +1136,50 @@
 
         function spawnShot() {
           const angle = (28 + Math.random() * 20) * (Math.PI / 180);
-          const speed = 820 + Math.random() * 420;
+          const speed = 700 + Math.random() * 380;
           shots.push({
             x: Math.random() * W * 0.9,
             y: Math.random() * H * 0.45,
             vx: Math.cos(angle) * speed,
             vy: Math.sin(angle) * speed,
             life: 1,
-            decay: 1.1 + Math.random() * 0.5,
+            decay: 0.9 + Math.random() * 0.45,
             len: 110 + Math.random() * 90,
           });
         }
 
         function drawSky(t, dt = 0) {
           sctx.clearRect(0, 0, W, H);
+          const hk = heartSkyLevel(t);
+          const twBoost = 1 + 0.6 * sunFlare;
           for (const s of stars) {
             const tw = reduceMotion ? 1 : 0.62 + 0.38 * Math.sin(t * 0.0011 * s.sp + s.ph);
-            sctx.fillStyle = "rgba(" + s.c + "," + (s.a * tw).toFixed(3) + ")";
-            sctx.beginPath();
-            sctx.arc(s.x, s.y, s.r, 0, TAU);
-            sctx.fill();
+            const a = Math.min(1, s.a * tw * twBoost);
+            if (hk < 1) {
+              sctx.fillStyle = "rgba(" + s.c + "," + (a * (1 - hk)).toFixed(3) + ")";
+              sctx.beginPath();
+              sctx.arc(s.x, s.y, s.r, 0, TAU);
+              sctx.fill();
+            }
+            if (hk > 0) {
+              sctx.save();
+              sctx.translate(s.x, s.y);
+              sctx.fillStyle = "rgba(255, 150, 172," + Math.min(1, a * 1.3 * hk).toFixed(3) + ")";
+              heartPath(sctx, s.r * 4.5 + 2.5);
+              sctx.fill();
+              sctx.restore();
+            }
             if (!reduceMotion) {
               s.y += s.drift;
               if (s.y > H + 2) s.y = -2;
             }
+          }
+          if (sunFlare > 0.01) {
+            const g = sctx.createRadialGradient(W / 2, H * 0.4, 0, W / 2, H * 0.4, Math.max(W, H) * 0.7);
+            g.addColorStop(0, "rgba(255, 200, 140," + (0.13 * sunFlare).toFixed(3) + ")");
+            g.addColorStop(1, "rgba(255, 200, 140, 0)");
+            sctx.fillStyle = g;
+            sctx.fillRect(0, 0, W, H);
           }
           drawFigures(t, dt);
           if (reduceMotion) return;
@@ -934,10 +1193,11 @@
             sh.x += sh.vx * dt;
             sh.y += sh.vy * dt;
             sh.life -= sh.decay * dt;
-            if (sh.life <= 0 || sh.x > W + 200 || sh.y > H + 200) {
+            if (sh.life <= -0.35 || sh.x > W + 200 || sh.y > H + 200) {
               shots.splice(i, 1);
               continue;
             }
+            if (sh.life <= 0) continue;
             const mag = Math.hypot(sh.vx, sh.vy);
             const tx = sh.x - (sh.vx / mag) * sh.len;
             const ty = sh.y - (sh.vy / mag) * sh.len;
@@ -1069,15 +1329,20 @@
         function figureOffset(f) {
           const b = f.box;
           const wide = figMode === "wide";
-          return {
-            x: b.x + (wide ? (pointerX - W / 2) * 0.008 : 0),
-            y: b.y + (wide ? -window.scrollY * 0.04 : 0),
-          };
+          let x = b.x + (wide ? (pointerX - W / 2) * 0.008 : 0);
+          let y = b.y + (wide ? -window.scrollY * 0.04 : 0);
+          if (uniteK > 0 && f.uniteT) {
+            x += (f.uniteT.x - x) * uniteK;
+            y += (f.uniteT.y - y) * uniteK;
+          }
+          return { x, y };
         }
 
         function drawFigures(t, dt) {
           if (!FIGS.length || locked) return;
-          const fade = figMode === "banner" ? clamp(1 - (window.scrollY - 40) / 260, 0, 1) : 1;
+          const u = uniteState(t);
+          uniteK = u.k;
+          const fade = Math.max(u.k, figMode === "banner" ? clamp(1 - (window.scrollY - 40) / 260, 0, 1) : 1);
           if (fade <= 0) return;
           const elapsed = reduceMotion ? 1e9 : t - traceStart;
           for (const f of FIGS) {
@@ -1186,6 +1451,7 @@
             }
             sctx.globalAlpha = 1;
           }
+          drawBridge(u, fade);
         }
 
         function figureAt(x, y) {
@@ -1205,6 +1471,12 @@
           document.body.style.cursor = hit ? "pointer" : "";
         });
         window.addEventListener("pointerdown", (ev) => {
+          if (!locked && catchShot(ev.clientX, ev.clientY)) {
+            sparkle(ev.clientX, ev.clientY, 30);
+            shower();
+            if (wishLine) showNote(wishLine, 6500);
+            return;
+          }
           const f = figureAt(ev.clientX, ev.clientY);
           if (!f) return;
           f.pulse = 1.2;
@@ -1240,6 +1512,36 @@
           fxDirty = true;
         }
 
+        function sparkle(x, y, count) {
+          if (reduceMotion) return;
+          for (let i = 0; i < count; i++) {
+            const a = Math.random() * TAU;
+            const sp = 50 + Math.random() * 240;
+            parts.push({
+              x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, g: 0, drag: 0.965,
+              size: 0.9 + Math.random() * 2, rot: 0, vr: 0, life: 1, decay: 0.75 + Math.random() * 0.7,
+              color: ["#ffffff", "#ffe9c9", "#d4eaff", "#ffd6de"][Math.floor(Math.random() * 4)], spark: true,
+            });
+          }
+          fxDirty = true;
+        }
+
+        function rain() {
+          if (reduceMotion) return;
+          for (let i = 0; i < 150; i++) {
+            setTimeout(() => {
+              parts.push({
+                x: Math.random() * W, y: -40 - Math.random() * 60,
+                vx: (Math.random() - 0.5) * 50, vy: 60 + Math.random() * 110, g: 70, drag: 1,
+                size: 8 + Math.random() * 14, rot: Math.random() * TAU, vr: (Math.random() - 0.5) * 2.5,
+                life: 1, decay: 0.16 + Math.random() * 0.1,
+                color: HEART_COLORS[Math.floor(Math.random() * HEART_COLORS.length)],
+              });
+              fxDirty = true;
+            }, Math.random() * 3000);
+          }
+        }
+
         function heartPath(ctx, s) {
           ctx.beginPath();
           ctx.moveTo(0, 0.3 * s);
@@ -1253,8 +1555,10 @@
           fctx.clearRect(0, 0, W, H);
           for (let i = parts.length - 1; i >= 0; i--) {
             const p = parts[i];
-            p.vy += 560 * dt;
-            p.vx *= 0.985;
+            p.vy += (p.g === undefined ? 560 : p.g) * dt;
+            const drag = p.drag === undefined ? 0.985 : p.drag;
+            p.vx *= drag;
+            if (p.spark) p.vy *= drag;
             p.x += p.vx * dt;
             p.y += p.vy * dt;
             p.rot += p.vr * dt;
@@ -1268,7 +1572,12 @@
             fctx.rotate(p.rot);
             fctx.globalAlpha = Math.min(1, p.life * 1.4);
             fctx.fillStyle = p.color;
-            heartPath(fctx, p.size);
+            if (p.spark) {
+              fctx.beginPath();
+              fctx.arc(0, 0, p.size, 0, TAU);
+            } else {
+              heartPath(fctx, p.size);
+            }
             fctx.fill();
             fctx.restore();
           }
@@ -1285,6 +1594,906 @@
           setTimeout(() => burst(cx + 120, cy - 40, 70), 520);
         }
 
+        // ---------- the planets ----------
+        // Where everything was at each moment. Positions come from JPL's
+        // approximate Keplerian elements (J2000 values + rates per century,
+        // valid 1800-2050); the Moon from a short mean-longitude series.
+        let orrery = null;
+        const RAD = Math.PI / 180;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const DARK = [6, 8, 22];
+        const PLANETS = [
+          { name: "Mercury", col: [168, 162, 156], lit: [236, 232, 226], size: 2.9, band: 0.16,
+            el: [0.38709927, 0.20563593, 7.00497902, 252.25032350, 77.45779628, 48.33076593],
+            rate: [0.00000037, 0.00001906, -0.00594749, 149472.67411175, 0.16047689, -0.12534081] },
+          { name: "Venus", col: [224, 192, 138], lit: [255, 244, 214], size: 4.0, band: 0.255,
+            el: [0.72333566, 0.00677672, 3.39467605, 181.97909950, 131.60246718, 76.67984255],
+            rate: [0.00000390, -0.00004107, -0.00078890, 58517.81538729, 0.00268329, -0.27769418] },
+          { name: "Earth", col: [48, 116, 220], lit: [186, 224, 255], size: 4.3, band: 0.345, earth: true,
+            el: [1.00000261, 0.01671123, -0.00001531, 100.46457166, 102.93768193, 0.0],
+            rate: [0.00000562, -0.00004392, -0.01294668, 35999.37244981, 0.32327364, 0.0] },
+          { name: "Mars", col: [192, 86, 52], lit: [255, 186, 146], size: 3.4, band: 0.445,
+            el: [1.52371034, 0.09339410, 1.84969142, -4.55343205, -23.94362959, 49.55953891],
+            rate: [0.00001847, 0.00007882, -0.00813131, 19140.30268499, 0.44441088, -0.29257343] },
+          { name: "Jupiter", col: [194, 158, 116], lit: [250, 234, 204], size: 7.4, band: 0.575, bands: true,
+            el: [5.20288700, 0.04838624, 1.30439695, 34.39644051, 14.72847983, 100.47390909],
+            rate: [-0.00011607, -0.00013253, -0.00183714, 3034.74612775, 0.21252668, 0.20469106] },
+          { name: "Saturn", col: [212, 184, 128], lit: [252, 240, 206], size: 6.3, band: 0.705, ring: true,
+            el: [9.53667594, 0.05386179, 2.48599187, 49.95424423, 92.59887831, 113.66242448],
+            rate: [-0.00125060, -0.00050991, 0.00193609, 1222.49362201, -0.41897216, -0.28867794] },
+          { name: "Uranus", col: [118, 196, 210], lit: [214, 246, 250], size: 4.7, band: 0.84,
+            el: [19.18916464, 0.04725744, 0.77263783, 313.23810451, 170.95427630, 74.01692503],
+            rate: [-0.00196176, -0.00004397, -0.00242939, 428.48202785, 0.40805281, 0.04240589] },
+          { name: "Neptune", col: [58, 88, 212], lit: [168, 190, 255], size: 4.5, band: 0.97,
+            el: [30.06992276, 0.00859048, 1.77004347, -55.12002969, 44.96476227, 131.78422574],
+            rate: [0.00026291, 0.00005105, 0.00035372, 218.45945325, -0.32241464, -0.00508664] },
+        ];
+        const EARTH = PLANETS[2];
+
+        const rgba = (c, a) => "rgba(" + c[0] + ", " + c[1] + ", " + c[2] + ", " + a + ")";
+        const mix = (a, b, k) => [0, 1, 2].map((i) => Math.round(a[i] + (b[i] - a[i]) * k));
+        const centuries = (ms) => (ms / 86400000 + 2440587.5 - 2451545.0) / 36525;
+
+        function elements(p, T) {
+          const [a0, e0, I0, L0, w0, O0] = p.el;
+          const [a1, e1, I1, L1, w1, O1] = p.rate;
+          const O = (O0 + O1 * T) * RAD;
+          const wbar = w0 + w1 * T;
+          return { a: a0 + a1 * T, e: e0 + e1 * T, I: (I0 + I1 * T) * RAD, L: L0 + L1 * T, wbar, w: wbar * RAD - O, O };
+        }
+
+        // Heliocentric ecliptic x/y (AU) for eccentric anomaly E.
+        function orbitPoint(el, E) {
+          const xp = el.a * (Math.cos(E) - el.e);
+          const yp = el.a * Math.sqrt(1 - el.e * el.e) * Math.sin(E);
+          const cw = Math.cos(el.w), sw = Math.sin(el.w), cO = Math.cos(el.O), sO = Math.sin(el.O), cI = Math.cos(el.I);
+          return {
+            x: (cw * cO - sw * sO * cI) * xp + (-sw * cO - cw * sO * cI) * yp,
+            y: (cw * sO + sw * cO * cI) * xp + (-sw * sO + cw * cO * cI) * yp,
+          };
+        }
+
+        function heliocentric(p, ms) {
+          const el = elements(p, centuries(ms));
+          const M = ((((el.L - el.wbar) % 360) + 540) % 360 - 180) * RAD;
+          let E = M + el.e * Math.sin(M);
+          for (let i = 0; i < 10; i++) {
+            const dE = (M - (E - el.e * Math.sin(E))) / (1 - el.e * Math.cos(E));
+            E += dE;
+            if (Math.abs(dE) < 1e-9) break;
+          }
+          return orbitPoint(el, E);
+        }
+
+        // Geocentric ecliptic longitude of the Moon (degrees), good to ~1°.
+        function moonLongitude(ms) {
+          const d = ms / 86400000 - 10957.5;
+          const L = 218.316 + 13.176396 * d;
+          const M = (134.963 + 13.064993 * d) * RAD;
+          const D = (297.850 + 12.190749 * d) * RAD;
+          return L + 6.289 * Math.sin(M) - 1.274 * Math.sin(M - 2 * D) + 0.658 * Math.sin(2 * D);
+        }
+
+        // Moon's elongation from the Sun (0 new, 180 full) and lit fraction.
+        function moonPhase(ms) {
+          const e = heliocentric(EARTH, ms);
+          const sunLon = Math.atan2(e.y, e.x) / RAD + 180;
+          const elong = (((moonLongitude(ms) - sunLon) % 360) + 360) % 360;
+          const lit = (1 - Math.cos(elong * RAD)) / 2;
+          const names = ["new", "waxing crescent", "first quarter", "waxing gibbous", "full", "waning gibbous", "last quarter", "waning crescent", "new"];
+          return { elong, lit, name: names[Math.round(elong / 45)] };
+        }
+
+        function moonGlyph(c, cx, cy, r, elong) {
+          const k = Math.cos(elong * RAD);
+          c.save();
+          c.translate(cx, cy);
+          c.fillStyle = "rgba(14, 16, 40, 1)";
+          c.beginPath();
+          c.arc(0, 0, r, 0, TAU);
+          c.fill();
+          if (elong >= 180) c.scale(-1, 1);
+          const g = c.createRadialGradient(-r * 0.3, -r * 0.3, 0, 0, 0, r);
+          g.addColorStop(0, "rgba(255, 253, 248, 0.98)");
+          g.addColorStop(1, "rgba(214, 210, 222, 0.92)");
+          c.fillStyle = g;
+          c.beginPath();
+          c.arc(0, 0, r, -Math.PI / 2, Math.PI / 2, false);
+          c.ellipse(0, 0, Math.abs(k) * r, r, 0, Math.PI / 2, -Math.PI / 2, k > 0);
+          c.closePath();
+          c.fill();
+          c.restore();
+          c.strokeStyle = "rgba(255, 255, 255, 0.16)";
+          c.lineWidth = 1;
+          c.beginPath();
+          c.arc(cx, cy, r, 0, TAU);
+          c.stroke();
+        }
+
+        function initOrrery(EVENTS, extras) {
+          const stage = $("#orrery .orb-stage");
+          const canvas = $("#orb");
+          const row = $("#moments");
+          const fill = $("#moments-fill");
+          const infoEl = $("#moment-info");
+          const info = { title: $("#moment-title"), when: $("#moment-when"), sky: $("#moment-sky"), ago: $("#moment-ago") };
+          if (!stage || !canvas || !row || !infoEl) return;
+          const ctx = canvas.getContext("2d");
+
+          const moments = Object.keys(EVENTS)
+            .filter((k) => k !== "lastSeen" && k !== "nextSeen")
+            .map((k) => {
+              const ev = EVENTS[k];
+              const when = parseLocal(ev.date);
+              return { key: k, title: ev.when || ev.label.replace(/^Since\s+/i, "When "), ms: when.getTime(), when };
+            });
+          moments.push({ key: "now", title: "Right now", live: true });
+          const metMs = moments[0].ms;
+          const targetOf = (m) => (m.live ? Date.now() : m.ms);
+          // one more moment, a year on from the first, that only shows if you go looking
+          const anniv = new Date(moments[0].when.getTime());
+          anniv.setFullYear(anniv.getFullYear() + 1);
+          moments.push({ key: "anniversary", title: "One year from the day we met", ms: anniv.getTime(), when: anniv, future: true });
+          let futureShown = false;
+          const lastIdx = () => moments.length - (futureShown ? 1 : 2);
+          const reasons = (extras && Array.isArray(extras.reasons) ? extras.reasons : []).filter((r) => typeof r === "string" && r.trim());
+          const reasonsTitle = (extras && typeof extras.reasonsTitle === "string" && extras.reasonsTitle.trim()) || "Why I love you";
+
+          // A view from a little above the ecliptic, turned so the stretch
+          // of Earth's orbit we've shared sits nearest the viewer.
+          const SIN_E = 0.52, PERSP = 0.24;
+          let sx = 0, sy = 0;
+          for (const m of moments) {
+            if (m.future) continue;
+            const e = heliocentric(EARTH, targetOf(m));
+            const a = Math.atan2(e.y, e.x);
+            sx += Math.cos(a);
+            sy += Math.sin(a);
+          }
+          const phi = -Math.PI / 2 - Math.atan2(sy, sx);
+          const cphi = Math.cos(phi), sphi = Math.sin(phi);
+
+          let W = 0, Hh = 0, cx = 0, cy = 0, R = 0, scale = 1;
+          let orbitBins = [];
+          let selected = -1;
+          let tDisp = metMs;
+          let tween = null;
+          let lastNowDraw = 0;
+          let tour = null, toured = false, visible = false;
+          let hover = null, hoverName = null, hoverA = 0, hoverPos = null;
+          let dragging = false, drag = null, suppressClick = false;
+          let buttons = [];
+          let reasonIdx = 0, reasonTimer = 0, noteOn = false;
+
+          // Compress the radial scale so all eight orbits fit on one disc.
+          function mapR(rAU) {
+            let i = 0;
+            while (i < PLANETS.length - 2 && rAU > PLANETS[i + 1].el[0]) i++;
+            const a0 = PLANETS[i].el[0], a1 = PLANETS[i + 1].el[0];
+            const b0 = PLANETS[i].band, b1 = PLANETS[i + 1].band;
+            return b0 + (b1 - b0) * Math.log(rAU / a0) / Math.log(a1 / a0);
+          }
+
+          function project(v) {
+            const r = Math.hypot(v.x, v.y) || 1e-9;
+            const k = mapR(r) / r;
+            const x = v.x * k, y = v.y * k;
+            const xr = x * cphi - y * sphi;
+            const yr = x * sphi + y * cphi;
+            const d = -yr;
+            const p = 1 / (1 - d * PERSP);
+            return { x: cx + xr * R * p, y: cy + d * SIN_E * R * p, p, d };
+          }
+
+          const earthAt = (ms) => project(heliocentric(EARTH, ms));
+
+          function buildOrbits() {
+            const T = centuries(tDisp);
+            orbitBins = PLANETS.map((p) => {
+              const el = elements(p, T);
+              const pts = [];
+              for (let i = 0; i <= 288; i++) pts.push(project(orbitPoint(el, (i / 288) * TAU)));
+              const bins = [];
+              for (let b = 0; b < 12; b++) bins.push({ path: new Path2D(), d: 0, n: 0 });
+              for (let i = 0; i < pts.length - 1; i++) {
+                const a = pts[i], c = pts[i + 1];
+                const bin = bins[Math.min(11, Math.max(0, Math.floor(((a.d + 1) / 2) * 12)))];
+                bin.path.moveTo(a.x, a.y);
+                bin.path.lineTo(c.x, c.y);
+                bin.d += a.d;
+                bin.n++;
+              }
+              return bins.filter((b) => b.n).map((b) => {
+                const d = b.d / b.n;
+                return { path: b.path, alpha: 0.07 + 0.17 * ((d + 1) / 2), width: 1 / (1 - d * PERSP) };
+              });
+            });
+          }
+
+          function resizeStage() {
+            const w = Math.max(1, Math.round(stage.clientWidth));
+            if (w === W) return;
+            W = w;
+            R = Math.max(270, Math.min(400, w / 2 - 28));
+            Hh = Math.round(R * SIN_E * (1 / (1 + PERSP) + 1 / (1 - PERSP)) + 64);
+            cx = w / 2;
+            cy = 30 + (R * SIN_E) / (1 + PERSP);
+            stage.style.height = Hh + "px";
+            canvas.width = Math.round(w * dpr);
+            canvas.height = Math.round(Hh * dpr);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            scale = Math.max(0.72, Math.min(1.15, R / 340));
+            buildOrbits();
+            draw(performance.now());
+          }
+
+          // ----- drawing -----
+          function drawSun(t) {
+            const r0 = 7.5 * scale;
+            const fl = sunFlare;
+            const breathe = 1 + 0.05 * Math.sin(t / 900) + 0.03 * Math.sin(t / 310);
+            const r2 = r0 * 11 * (1 + 0.6 * fl);
+            let g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r2);
+            g.addColorStop(0, "rgba(255, 196, 120, " + (0.4 + 0.3 * fl).toFixed(3) + ")");
+            g.addColorStop(0.22, "rgba(255, 170, 100, " + (0.13 + 0.12 * fl).toFixed(3) + ")");
+            g.addColorStop(1, "rgba(255, 150, 90, 0)");
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.arc(cx, cy, r2, 0, TAU);
+            ctx.fill();
+            const r1 = r0 * 3.3 * breathe * (1 + 0.5 * fl);
+            g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r1);
+            g.addColorStop(0, "rgba(255, 236, 190, 0.85)");
+            g.addColorStop(0.4, "rgba(255, 210, 140, 0.32)");
+            g.addColorStop(1, "rgba(255, 190, 120, 0)");
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.arc(cx, cy, r1, 0, TAU);
+            ctx.fill();
+            g = ctx.createLinearGradient(cx - R * 0.7, 0, cx + R * 0.7, 0);
+            g.addColorStop(0, "rgba(255, 230, 200, 0)");
+            g.addColorStop(0.5, "rgba(255, 230, 200, 0.14)");
+            g.addColorStop(1, "rgba(255, 230, 200, 0)");
+            ctx.fillStyle = g;
+            ctx.fillRect(cx - R * 0.7, cy - 0.75, R * 1.4, 1.5);
+            g = ctx.createRadialGradient(cx - r0 * 0.25, cy - r0 * 0.25, 0, cx, cy, r0);
+            g.addColorStop(0, "#fffdf4");
+            g.addColorStop(0.55, "#fff0c2");
+            g.addColorStop(1, "#ffd27c");
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.arc(cx, cy, r0, 0, TAU);
+            ctx.fill();
+          }
+
+          function drawRing(x, y, r, back) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(-0.28);
+            ctx.beginPath();
+            ctx.rect(-3 * r, back ? -3 * r : 0, 6 * r, 3 * r);
+            ctx.clip();
+            const tilt = 0.38;
+            ctx.lineWidth = r * 0.42;
+            ctx.strokeStyle = back ? "rgba(226, 206, 160, 0.4)" : "rgba(238, 220, 176, 0.62)";
+            ctx.beginPath();
+            ctx.ellipse(0, 0, r * 2.15, r * 2.15 * tilt, 0, 0, TAU);
+            ctx.stroke();
+            ctx.lineWidth = r * 0.3;
+            ctx.strokeStyle = back ? "rgba(226, 206, 160, 0.28)" : "rgba(238, 220, 176, 0.42)";
+            ctx.beginPath();
+            ctx.ellipse(0, 0, r * 1.55, r * 1.55 * tilt, 0, 0, TAU);
+            ctx.stroke();
+            ctx.restore();
+          }
+
+          function drawMoonlet(m, lx, ly) {
+            const g = ctx.createRadialGradient(m.x + lx * m.r * 0.5, m.y + ly * m.r * 0.5, 0, m.x, m.y, m.r * 1.1);
+            g.addColorStop(0, "rgba(236, 236, 240, 1)");
+            g.addColorStop(0.6, "rgba(150, 150, 162, 1)");
+            g.addColorStop(1, "rgba(40, 42, 60, 1)");
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.arc(m.x, m.y, m.r, 0, TAU);
+            ctx.fill();
+          }
+
+          function drawPlanet(p, q, ms) {
+            const r = p.size * scale * q.p;
+            const x = q.x, y = q.y;
+            const dx = cx - x, dy = cy - y, dl = Math.hypot(dx, dy) || 1;
+            const lx = dx / dl, ly = dy / dl;
+            let moon = null;
+            if (p.earth) {
+              const a = moonLongitude(ms) * RAD + phi;
+              const D = r * 3.1;
+              moon = { x: x + Math.cos(a) * D, y: y - Math.sin(a) * SIN_E * D, r: Math.max(1.1, r * 0.3), behind: Math.sin(a) > 0 };
+            }
+            if (moon && moon.behind) drawMoonlet(moon, lx, ly);
+            if (p.ring) drawRing(x, y, r, true);
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, TAU);
+            ctx.clip();
+            let g = ctx.createRadialGradient(x + lx * r * 0.5, y + ly * r * 0.5, 0, x, y, r * 1.15);
+            g.addColorStop(0, rgba(p.lit, 1));
+            g.addColorStop(0.55, rgba(p.col, 1));
+            g.addColorStop(1, rgba(mix(p.col, DARK, 0.55), 1));
+            ctx.fillStyle = g;
+            ctx.fillRect(x - r, y - r, 2 * r, 2 * r);
+            if (p.bands) {
+              ctx.save();
+              ctx.translate(x, y);
+              ctx.rotate(-0.22);
+              const stripes = [[-0.62, 0.14, "rgba(255, 240, 220, 0.16)"], [-0.3, 0.16, "rgba(130, 86, 56, 0.3)"], [0.02, 0.12, "rgba(255, 240, 220, 0.14)"], [0.3, 0.17, "rgba(130, 86, 56, 0.28)"], [0.62, 0.1, "rgba(255, 240, 220, 0.12)"]];
+              for (const [off, h, c] of stripes) {
+                ctx.fillStyle = c;
+                ctx.fillRect(-r, (off - h / 2) * r, 2 * r, h * r);
+              }
+              ctx.restore();
+            }
+            g = ctx.createLinearGradient(x + lx * r, y + ly * r, x - lx * r, y - ly * r);
+            g.addColorStop(0, "rgba(6, 8, 22, 0)");
+            g.addColorStop(0.5, "rgba(6, 8, 22, 0.1)");
+            g.addColorStop(0.78, "rgba(6, 8, 22, 0.6)");
+            g.addColorStop(1, "rgba(6, 8, 22, 0.9)");
+            ctx.fillStyle = g;
+            ctx.fillRect(x - r, y - r, 2 * r, 2 * r);
+            ctx.restore();
+
+            if (p.earth) {
+              g = ctx.createRadialGradient(x, y, r * 0.8, x, y, r * 1.6);
+              g.addColorStop(0, "rgba(120, 190, 255, 0)");
+              g.addColorStop(0.3, "rgba(120, 190, 255, 0.4)");
+              g.addColorStop(1, "rgba(120, 190, 255, 0)");
+              ctx.fillStyle = g;
+              ctx.beginPath();
+              ctx.arc(x, y, r * 1.6, 0, TAU);
+              ctx.fill();
+            }
+            if (p.ring) drawRing(x, y, r, false);
+            if (moon && !moon.behind) drawMoonlet(moon, lx, ly);
+          }
+
+          function draw(t) {
+            if (!W) return;
+            ctx.clearRect(0, 0, W, Hh);
+            const ms = tDisp;
+
+            // a faint haze along the plane of the system
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.scale(1, SIN_E);
+            let g = ctx.createRadialGradient(0, 0, 0, 0, 0, R * 0.62);
+            g.addColorStop(0, "rgba(255, 206, 160, 0.1)");
+            g.addColorStop(0.5, "rgba(255, 196, 150, 0.035)");
+            g.addColorStop(1, "rgba(255, 196, 150, 0)");
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.arc(0, 0, R * 0.62, 0, TAU);
+            ctx.fill();
+            ctx.restore();
+
+            // orbits, brighter on the near side
+            ctx.lineCap = "round";
+            for (const bins of orbitBins) {
+              for (const b of bins) {
+                ctx.lineWidth = b.width;
+                ctx.strokeStyle = "rgba(255, 255, 255, " + b.alpha.toFixed(3) + ")";
+                ctx.stroke(b.path);
+              }
+            }
+
+            // the stretch of Earth's orbit we've shared so far
+            if (ms > metMs) {
+              const days = (ms - metMs) / 86400000;
+              const steps = Math.max(2, Math.min(360, Math.ceil(days * 2)));
+              ctx.beginPath();
+              for (let i = 0; i <= steps; i++) {
+                const q = earthAt(metMs + ((ms - metMs) * i) / steps);
+                if (i === 0) ctx.moveTo(q.x, q.y);
+                else ctx.lineTo(q.x, q.y);
+              }
+              ctx.lineWidth = 9 * scale;
+              ctx.strokeStyle = "rgba(255, 143, 163, 0.09)";
+              ctx.stroke();
+              ctx.lineWidth = 1.8 * scale;
+              ctx.strokeStyle = "rgba(255, 143, 163, 0.5)";
+              ctx.stroke();
+            }
+
+            const pos = PLANETS.map((p) => ({ p, q: project(heliocentric(p, ms)) }));
+            pos.sort((a, b) => a.q.d - b.q.d);
+            let sunDrawn = false;
+            for (const o of pos) {
+              if (!sunDrawn && o.q.d >= 0) {
+                drawSun(t);
+                sunDrawn = true;
+              }
+              drawPlanet(o.p, o.q, ms);
+            }
+            if (!sunDrawn) drawSun(t);
+
+            // the name of whatever the pointer rests on
+            if (hoverA > 0.01 && hoverName && !(noteOn && hoverName === EARTH)) {
+              const o = pos.find((e) => e.p === hoverName);
+              if (o) {
+                const r = o.p.size * scale * o.q.p;
+                ctx.font = "500 11px Inter, system-ui, sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "top";
+                if ("letterSpacing" in ctx) ctx.letterSpacing = "0.1em";
+                ctx.fillStyle = "rgba(246, 243, 248, " + (0.75 * hoverA).toFixed(3) + ")";
+                ctx.fillText(o.p.name.toUpperCase(), o.q.x, o.q.y + r * (o.p.ring ? 1.9 : 1) + 7 + (1 - hoverA) * 4);
+              }
+            }
+            if (noteOn) placeNote();
+          }
+
+          // ----- choosing a moment -----
+          const ease = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
+          const degBetween = (a, b) => Math.round(((((Math.atan2(b.y, b.x) - Math.atan2(a.y, a.x)) / RAD) % 360) + 360) % 360);
+
+          function phaseWords(ph, tense) {
+            const be = tense === true ? "was" : tense === false ? "is" : tense;
+            if (ph.name === "new" || ph.name === "full") return be + " " + ph.name;
+            return be + " a " + ph.name + ", " + Math.round(ph.lit * 100) + "% lit";
+          }
+
+          function fillInfo(m) {
+            const at = targetOf(m);
+            const ph = moonPhase(at);
+            const eNow = heliocentric(EARTH, Date.now());
+            info.title.textContent = m.title;
+            if (m.live) {
+              info.when.textContent = fmtDate(new Date());
+              info.sky.textContent = "The Moon " + phaseWords(ph, false) + ". Since we met, Earth has carried us " +
+                degBetween(heliocentric(EARTH, metMs), eNow) + "° around the Sun.";
+              info.ago.textContent = "";
+            } else if (m.future) {
+              info.when.textContent = fmtDate(m.when);
+              info.sky.textContent = "The Moon " + phaseWords(ph, "will be") + ", and Earth will be right back where it was the day we met.";
+              updateAgo();
+            } else {
+              info.when.textContent = fmtDate(m.when);
+              const travelled = degBetween(heliocentric(EARTH, at), eNow);
+              info.sky.textContent = "The Moon " + phaseWords(ph, true) + "." +
+                (travelled > 0 ? " Since then, Earth has carried us " + travelled + "° around the Sun." : "");
+              updateAgo();
+            }
+          }
+
+          function updateAgo() {
+            const m = moments[selected];
+            if (!m) return;
+            if (m.live) {
+              info.when.textContent = fmtDate(new Date());
+              return;
+            }
+            const part = (n, w) => n.toLocaleString() + " " + w + (n === 1 ? "" : "s");
+            const words = (b) => part(b.days, "day") + ", " + part(b.hours, "hour") + ", " + part(b.minutes, "minute") + " and " + part(b.seconds, "second");
+            if (m.future) {
+              info.ago.textContent = "In " + words(breakdown(m.ms - Date.now())) + ". To be continued.";
+              return;
+            }
+            info.ago.textContent = words(breakdown(Date.now() - m.ms)) + " ago";
+          }
+
+          function highlight(i) {
+            buttons.forEach((b, j) => {
+              b.classList.toggle("on", j === i);
+              b.setAttribute("aria-pressed", j === i ? "true" : "false");
+            });
+          }
+
+          function select(i, byUser, fromDrag) {
+            if (byUser) stopTour();
+            const m = moments[i];
+            const changed = i !== selected;
+            selected = i;
+            highlight(i);
+            fill.style.width = ((i / lastIdx()) * 100).toFixed(2) + "%";
+            const to = targetOf(m);
+            if (reduceMotion || !W) {
+              tDisp = to;
+              tween = null;
+              draw(performance.now());
+            } else {
+              const span = Math.abs(to - tDisp) / 86400000;
+              tween = { from: tDisp, to, start: performance.now(), dur: fromDrag ? 380 : 700 + Math.min(1700, span * 14) };
+            }
+            if (changed && !reduceMotion) {
+              infoEl.classList.add("fade");
+              setTimeout(() => {
+                fillInfo(m);
+                infoEl.classList.remove("fade");
+              }, 240);
+            } else {
+              fillInfo(m);
+            }
+          }
+
+          function frame(t) {
+            if (tween) {
+              const k = Math.min(1, (t - tween.start) / tween.dur);
+              tDisp = tween.from + (tween.to - tween.from) * ease(k);
+              if (k >= 1) tween = null;
+            } else if (selected >= 0 && moments[selected].live && !dragging && t - lastNowDraw > 1000) {
+              lastNowDraw = t;
+              tDisp = Date.now();
+            }
+            hoverA += ((hover ? 1 : 0) - hoverA) * 0.14;
+            if (visible) draw(t);
+          }
+
+          // ----- the row of moons -----
+          const shortDate = (d) => d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+          buttons = moments.map((m, i) => {
+            const b = document.createElement("button");
+            b.type = "button";
+            b.className = m.future ? "moment future" : "moment";
+            b.innerHTML = '<canvas class="moon" aria-hidden="true"></canvas><span class="d"></span>';
+            $(".d", b).textContent = m.live ? "Now" : shortDate(m.when);
+            const ph = moonPhase(targetOf(m));
+            b.setAttribute("aria-label", m.title + (m.live ? "" : ", " + fmtDate(m.when)) + ". The Moon " + phaseWords(ph, m.future ? "will be" : !m.live) + ".");
+            const mc = $(".moon", b);
+            const px = Math.round(34 * dpr);
+            mc.width = mc.height = px;
+            const c2 = mc.getContext("2d");
+            c2.setTransform(dpr, 0, 0, dpr, 0, 0);
+            moonGlyph(c2, 17, 17, 12.5, ph.elong);
+            b.addEventListener("click", () => {
+              if (suppressClick) return;
+              select(i, true);
+            });
+            row.appendChild(b);
+            return b;
+          });
+
+          // Drag along the row to move through time; let go to settle on a moment.
+          function rowFractionRaw(clientX) {
+            const a = buttons[0].getBoundingClientRect();
+            const z = buttons[lastIdx()].getBoundingClientRect();
+            const x0 = a.left + a.width / 2, x1 = z.left + z.width / 2;
+            return (clientX - x0) / Math.max(1, x1 - x0);
+          }
+          const rowFraction = (clientX) => Math.min(1, Math.max(0, rowFractionRaw(clientX)));
+          function revealFuture() {
+            if (futureShown) return;
+            futureShown = true;
+            buttons[moments.length - 1].classList.add("shown");
+          }
+          function timeAt(f) {
+            const n = lastIdx();
+            const i = Math.min(n - 1, Math.floor(f * n));
+            const k = f * n - i;
+            const t0 = targetOf(moments[i]), t1 = targetOf(moments[i + 1]);
+            return t0 + (t1 - t0) * k;
+          }
+          row.addEventListener("pointerdown", (ev) => {
+            if (ev.pointerType === "mouse" && ev.button !== 0) return;
+            drag = { id: ev.pointerId, x0: ev.clientX, moved: false };
+          });
+          row.addEventListener("pointermove", (ev) => {
+            if (!drag || ev.pointerId !== drag.id) return;
+            if (!drag.moved) {
+              if (Math.abs(ev.clientX - drag.x0) < 5) return;
+              drag.moved = true;
+              dragging = true;
+              stopTour();
+              tween = null;
+              row.classList.add("scrubbing");
+              try { row.setPointerCapture(ev.pointerId); } catch (_) { /* ignore */ }
+            }
+            if (!futureShown && rowFractionRaw(ev.clientX) > 1.1) revealFuture();
+            const f = rowFraction(ev.clientX);
+            tDisp = timeAt(f);
+            fill.style.width = (f * 100).toFixed(2) + "%";
+            highlight(Math.round(f * lastIdx()));
+            if (reduceMotion) draw(performance.now());
+          });
+          const endDrag = (ev) => {
+            if (!drag || ev.pointerId !== drag.id) return;
+            const moved = drag.moved;
+            drag = null;
+            if (!moved) return;
+            dragging = false;
+            row.classList.remove("scrubbing");
+            suppressClick = true;
+            setTimeout(() => (suppressClick = false), 0);
+            select(Math.round(rowFraction(ev.clientX) * lastIdx()), true, true);
+          };
+          row.addEventListener("pointerup", endDrag);
+          row.addEventListener("pointercancel", endDrag);
+          row.addEventListener("keydown", (ev) => {
+            if (ev.key !== "ArrowLeft" && ev.key !== "ArrowRight") return;
+            ev.preventDefault();
+            if (ev.key === "ArrowRight" && selected === lastIdx()) revealFuture();
+            const j = Math.max(0, Math.min(lastIdx(), selected + (ev.key === "ArrowRight" ? 1 : -1)));
+            select(j, true);
+            buttons[j].focus();
+          });
+
+          // ----- the scene itself -----
+          function canvasPoint(ev) {
+            const rect = canvas.getBoundingClientRect();
+            return { x: ((ev.clientX - rect.left) / rect.width) * W, y: ((ev.clientY - rect.top) / rect.height) * Hh };
+          }
+          function planetAt(x, y) {
+            let best = null, bestD = 20 * scale;
+            for (const p of PLANETS) {
+              const q = project(heliocentric(p, tDisp));
+              const d = Math.hypot(q.x - x, q.y - y);
+              const lim = Math.max(10, p.size * scale * q.p + 7);
+              if (d < lim && d < bestD) { bestD = d; best = p; }
+            }
+            return best;
+          }
+          canvas.addEventListener("pointermove", (ev) => {
+            if (ev.pointerType !== "mouse") return;
+            const { x, y } = canvasPoint(ev);
+            const best = planetAt(x, y);
+            hover = best;
+            if (best) hoverName = best;
+            canvas.style.cursor = best === EARTH && reasons.length ? "pointer" : "";
+          });
+          canvas.addEventListener("pointerleave", () => { hover = null; });
+
+          // Earth keeps a list; each click reads the next line of it
+          const earthNote = document.createElement("div");
+          earthNote.className = "earth-note";
+          earthNote.innerHTML = '<span class="n"></span><span class="t"></span>';
+          stage.appendChild(earthNote);
+          function placeNote() {
+            const q = earthAt(tDisp);
+            const r = EARTH.size * scale * q.p;
+            earthNote.style.left = q.x.toFixed(1) + "px";
+            earthNote.style.top = (q.y + r + 14).toFixed(1) + "px";
+          }
+          function showReason() {
+            const i = reasonIdx;
+            reasonIdx = (reasonIdx + 1) % reasons.length;
+            $(".n", earthNote).textContent = reasonsTitle + " \u00b7 " + (i + 1) + " of " + reasons.length;
+            $(".t", earthNote).textContent = reasons[i];
+            placeNote();
+            earthNote.classList.add("show");
+            noteOn = true;
+            clearTimeout(reasonTimer);
+            reasonTimer = setTimeout(() => {
+              earthNote.classList.remove("show");
+              noteOn = false;
+            }, 9000);
+            if (i === reasons.length - 1) setTimeout(heartSky, 900);
+          }
+          canvas.addEventListener("click", (ev) => {
+            const { x, y } = canvasPoint(ev);
+            if (reasons.length && planetAt(x, y) === EARTH) showReason();
+          });
+
+          // A slow first pass through every moment, ending on today.
+          function startTour() {
+            if (!visible || locked || toured || tour || reduceMotion) return;
+            toured = true;
+            let i = 0;
+            const step = () => {
+              i++;
+              if (i > lastIdx()) { tour = null; return; }
+              select(i, false);
+              tour = setTimeout(step, 3600);
+            };
+            tour = setTimeout(step, 2400);
+          }
+          function stopTour() {
+            if (tour) clearTimeout(tour);
+            tour = null;
+            toured = true;
+          }
+          if (window.IntersectionObserver) {
+            new IntersectionObserver((entries) => {
+              for (const e of entries) {
+                visible = e.isIntersecting;
+                if (visible) startTour();
+              }
+            }, { threshold: 0.3 }).observe(stage);
+          } else {
+            visible = true;
+          }
+
+          if (window.ResizeObserver) new ResizeObserver(resizeStage).observe(stage);
+          else window.addEventListener("resize", resizeStage);
+          resizeStage();
+          select(0, false);
+          setTimeout(() => {
+            updateAgo();
+            setInterval(updateAgo, 1000);
+          }, 1000 - (Date.now() % 1000));
+          if (reduceMotion) setInterval(() => { if (moments[selected] && moments[selected].live) { tDisp = Date.now(); draw(performance.now()); } }, 60000);
+
+          orrery = { frame, startTour };
+        }
+
+        // ---------- little secrets ----------
+        const note = $("#note");
+        let noteTimer = 0;
+        function showNote(text, ms) {
+          if (!note) return;
+          clearTimeout(noteTimer);
+          note.textContent = text;
+          note.classList.add("show");
+          noteTimer = setTimeout(() => note.classList.remove("show"), ms);
+        }
+
+        // the Sun flares and the sky warms for the minute something happened
+        let sunFlare = 0, flareTarget = 0;
+
+        // every star becomes a heart for a few seconds
+        let heartSkyStart = -1;
+        function heartSkyLevel(t) {
+          if (heartSkyStart < 0) return 0;
+          const e = t - heartSkyStart;
+          if (e < 1000) return e / 1000;
+          if (e < 5500) return 1;
+          if (e < 7500) return 1 - (e - 5500) / 2000;
+          heartSkyStart = -1;
+          return 0;
+        }
+        function heartSky() {
+          if (reduceMotion) return;
+          heartSkyStart = performance.now();
+          rain();
+        }
+
+        // the two figures drift together, join, and settle back
+        let unite = null, uniteK = 0;
+        const UNITE_IN = 2400, UNITE_HOLD = 3200, UNITE_OUT = 2400;
+        function uniteState(t) {
+          if (!unite) return { k: 0, bridge: 0, bridgeA: 0 };
+          const e = t - unite.start;
+          const ease = (p) => (p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2);
+          if (e < UNITE_IN) return { k: ease(e / UNITE_IN), bridge: 0, bridgeA: 0 };
+          if (e < UNITE_IN + UNITE_HOLD) return { k: 1, bridge: clamp((e - UNITE_IN) / 1100, 0, 1), bridgeA: 1 };
+          const p = (e - UNITE_IN - UNITE_HOLD) / UNITE_OUT;
+          if (p >= 1) {
+            unite = null;
+            return { k: 0, bridge: 0, bridgeA: 0 };
+          }
+          return { k: 1 - ease(p), bridge: 1, bridgeA: clamp(1 - p * 2.5, 0, 1) };
+        }
+        function startUnite() {
+          if (unite || locked || reduceMotion || FIGS.length < 2) return;
+          const L = FIGS.find((f) => f.side === "left"), Rf = FIGS.find((f) => f.side === "right");
+          if (!L || !Rf || !L.box || !Rf.box) return;
+          const gap = clamp(Math.min(L.box.w, Rf.box.w) * 0.4, 48, 130);
+          L.uniteT = { x: W / 2 - gap / 2 - L.box.w, y: H / 2 - L.box.h / 2 };
+          Rf.uniteT = { x: W / 2 + gap / 2, y: H / 2 - Rf.box.h / 2 };
+          const pick = (f, rightmost) => {
+            let best = 0, bx = rightmost ? -Infinity : Infinity;
+            f.pts.forEach((P, i) => {
+              if (P[2] > 2) return;
+              if (rightmost ? P[0] > bx : P[0] < bx) { bx = P[0]; best = i; }
+            });
+            return best;
+          };
+          unite = { start: performance.now(), a: pick(L, true), b: pick(Rf, false), pulsed: false };
+          document.documentElement.classList.add("uniting");
+          setTimeout(() => document.documentElement.classList.remove("uniting"), UNITE_IN + UNITE_HOLD + 300);
+        }
+        function drawBridge(u, fade) {
+          if (!unite || u.bridge <= 0) return;
+          const L = FIGS.find((f) => f.side === "left"), Rf = FIGS.find((f) => f.side === "right");
+          if (!L || !Rf || !L.box || !Rf.box) return;
+          const oL = figureOffset(L), oR = figureOffset(Rf);
+          const A = L.pts[unite.a], B = Rf.pts[unite.b];
+          const ax = oL.x + A[0] * L.box.w, ay = oL.y + A[1] * L.box.w;
+          const bx = oR.x + B[0] * Rf.box.w, by = oR.y + B[1] * Rf.box.w;
+          const p = u.bridge;
+          const g = sctx.createLinearGradient(ax, ay, bx, by);
+          g.addColorStop(0, "rgba(" + L.tint + ",0.75)");
+          g.addColorStop(1, "rgba(" + Rf.tint + ",0.75)");
+          sctx.globalAlpha = fade * u.bridgeA;
+          sctx.strokeStyle = g;
+          sctx.lineWidth = 1;
+          sctx.lineCap = "round";
+          sctx.beginPath();
+          sctx.moveTo(ax, ay);
+          sctx.lineTo(ax + (bx - ax) * p, ay + (by - ay) * p);
+          sctx.stroke();
+          for (let i = 1; i <= 3; i++) {
+            const f = i / 4;
+            const s = clamp((p - f) / 0.1, 0, 1);
+            if (s <= 0) break;
+            const x = ax + (bx - ax) * f, y = ay + (by - ay) * f;
+            const r = 2 * (1 - Math.pow(1 - s, 3));
+            const hr = r * 6;
+            sctx.globalAlpha = fade * u.bridgeA * 0.8 * s;
+            sctx.drawImage(i === 2 ? Rf.halo : L.halo, x - hr, y - hr, hr * 2, hr * 2);
+            sctx.globalAlpha = fade * u.bridgeA;
+            sctx.fillStyle = "rgba(255,255,255,0.95)";
+            sctx.beginPath();
+            sctx.arc(x, y, r, 0, TAU);
+            sctx.fill();
+          }
+          if (p >= 1 && !unite.pulsed) {
+            unite.pulsed = true;
+            L.pulse = 1.2;
+            Rf.pulse = 1.2;
+            sparkle((ax + bx) / 2, (ay + by) / 2, 26);
+          }
+          sctx.globalAlpha = 1;
+        }
+
+        // her name, typed anywhere
+        let secretWord = "", typed = "", wishLine = "";
+        window.addEventListener("keydown", (ev) => {
+          if (locked || !secretWord || ev.ctrlKey || ev.metaKey || ev.altKey || ev.key.length !== 1) return;
+          const el = ev.target;
+          if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
+          typed = (typed + ev.key.toLowerCase()).slice(-32);
+          if (typed.endsWith(secretWord)) {
+            typed = "";
+            startUnite();
+          }
+        });
+
+        // a shooting star, caught
+        function catchShot(x, y) {
+          for (let i = 0; i < shots.length; i++) {
+            const sh = shots[i];
+            const mag = Math.hypot(sh.vx, sh.vy) || 1;
+            const dx = -(sh.vx / mag) * sh.len, dy = -(sh.vy / mag) * sh.len;
+            const l2 = dx * dx + dy * dy;
+            const u = clamp(l2 ? ((x - sh.x) * dx + (y - sh.y) * dy) / l2 : 0, 0, 1);
+            const d = Math.hypot(sh.x + dx * u - x, sh.y + dy * u - y);
+            if (d < 56) {
+              shots.splice(i, 1);
+              return true;
+            }
+          }
+          return false;
+        }
+        function shower() {
+          for (let i = 0; i < 24; i++) setTimeout(spawnShot, 150 + Math.random() * 3200);
+          nextShot = performance.now() + 14000;
+        }
+
+        function initEggs(p) {
+          const ex = p.extras || {};
+          wishLine = typeof ex.wish === "string" ? ex.wish.trim() : "";
+          const figs = p.figures || [];
+          const right = figs.find((f) => f.side === "right") || figs[figs.length - 1];
+          secretWord = right ? String(right.label).toLowerCase().normalize("NFKD").replace(/[^a-z]/g, "") : "";
+          if (secretWord.length < 3) secretWord = "";
+
+          // the minute each thing happened, every day
+          const minutes = Object.keys(p.events)
+            .filter((k) => k !== "lastSeen" && k !== "nextSeen")
+            .map((k) => {
+              const ev = p.events[k];
+              const d = parseLocal(ev.date);
+              return { hm: d.getHours() * 60 + d.getMinutes(), line: ev.minute || ev.label.replace(/^Since\s+/i, "This is the minute ") + "." };
+            });
+          let shownKey = "";
+          function checkMinute() {
+            if (locked) return;
+            const d = new Date();
+            const hm = d.getHours() * 60 + d.getMinutes();
+            const key = d.toDateString() + ":" + hm;
+            const hit = minutes.find((m) => m.hm === hm);
+            if (!hit || key === shownKey) return;
+            shownKey = key;
+            const left = Math.max(5000, 60000 - (d.getSeconds() * 1000 + d.getMilliseconds()));
+            showNote(hit.line, left);
+            flareTarget = 1;
+            setTimeout(() => { flareTarget = 0; }, left);
+          }
+          checkMinute();
+          setTimeout(() => {
+            checkMinute();
+            setInterval(checkMinute, 1000);
+          }, 1000 - (Date.now() % 1000));
+        }
+
         // ---------- animation loop ----------
         let last = 0;
         let running = false;
@@ -1292,7 +2501,9 @@
           if (!running) return;
           const dt = last ? Math.min(0.05, (t - last) / 1000) : 0;
           last = t;
+          sunFlare += (flareTarget - sunFlare) * Math.min(1, dt * 1.6);
           drawSky(t, dt);
+          if (orrery) orrery.frame(t, dt);
           if (parts.length || fxDirty) drawFx(dt);
           requestAnimationFrame(frame);
         }
@@ -1319,7 +2530,9 @@
           const page = $("#page");
           page.innerHTML = p.html;
           initClocks(p.events);
+          initOrrery(p.events, p.extras);
           initFigures(p);
+          initEggs(p);
           const heart = $("#heart");
           if (heart) {
             heart.addEventListener("click", () => {
@@ -1338,6 +2551,7 @@
           const gate = $("#gate");
           document.documentElement.classList.remove("locked");
           traceStart = performance.now() + (animated ? 700 : 900);
+          if (orrery) orrery.startTour();
           if (!gate) return;
           if (animated) {
             gate.classList.add("open");
