@@ -773,7 +773,7 @@
           waitClocks.append(lastSeen.el, divider, nextSeen.el);
 
           const story = $("#story");
-          const storyClocks = ["met", "firstDate", "kiss", "love"].map((key, i) => {
+          const storyClocks = Object.keys(EVENTS).filter((k) => k !== "lastSeen" && k !== "nextSeen").map((key, i) => {
             const c = makeClock(EVENTS[key]);
             const card = document.createElement("div");
             card.className = "card reveal";
