@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
 
@@ -108,6 +108,49 @@
         }
       }
 
+      /* ---------- in Persian ---------- */
+      html.fa {
+        --serif: "Vazirmatn", "Noto Naskh Arabic", Tahoma, sans-serif;
+        --sans: "Vazirmatn", Tahoma, system-ui, sans-serif;
+      }
+
+      html.fa body,
+      html.fa body * {
+        letter-spacing: 0;
+        font-style: normal;
+      }
+
+      html.fa h1,
+      html.fa .tagline,
+      html.fa .section-title,
+      html.fa .moment-title,
+      html.fa .note {
+        font-family: "Noto Nastaliq Urdu", var(--serif);
+        line-height: 1.9;
+      }
+
+      html.fa h1 {
+        font-weight: 500;
+      }
+
+      html.fa .section-title::after {
+        background: linear-gradient(270deg, var(--line), transparent);
+      }
+
+      html.fa .moments-fill {
+        left: auto;
+        right: 0;
+      }
+
+      html.fa .clock .n,
+      html.fa .tile .big {
+        direction: ltr;
+      }
+
+      html.fa .gate-q {
+        white-space: normal;
+      }
+
       /* ---------- layout ---------- */
       .page {
         position: relative;
@@ -115,7 +158,6 @@
         max-width: 840px;
         margin: 0 auto;
         padding: var(--sky-pad, 76px) 20px 64px;
-        transition: opacity 1.6s ease;
       }
 
       .hero {
@@ -665,7 +707,6 @@
       }
 
       html.uniting .page {
-        opacity: 0.05;
         pointer-events: none;
       }
 
@@ -904,6 +945,109 @@
         const TAU = Math.PI * 2;
         const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
+        // ---------- language ----------
+        // The whole page can be read in Persian. Typing "farsi" anywhere turns it over,
+        // typing it again (or "english") turns it back, and the choice is remembered.
+        const LANG_STORE = "atieh-lang";
+        let lang = "en";
+        try { if (localStorage.getItem(LANG_STORE) === "fa") lang = "fa"; } catch (_) { /* ignore */ }
+        const fa = () => lang === "fa";
+        const UI = {
+          en: {
+            day: "day", days: "days", hour: "hour", hours: "hours", minute: "minute", minutes: "minutes", second: "second", seconds: "seconds",
+            theWait: "The wait", waitOver: "The wait is over", behindUs: "% behind us",
+            heartbeats: "heartbeats", sunrises: "sunrises", fullMoons: "full moons", kmSun: "km around the Sun",
+            now: "Now", rightNow: "Right now", oneYear: "One year from the day we met",
+            whyTitle: "Why I love you", of: "of", amp: " & ",
+            gateQ: "Where did we go to eat on our second date?", gatePh: "your answer", gateAria: "Your answer", gateOpen: "Open",
+            gateWrong: "Not quite. Try again.", gateNet: "Couldn't load the page. Check your connection and try again.",
+            gateHttps: "This page needs a secure (https) connection.",
+          },
+          fa: {
+            day: "روز", days: "روز", hour: "ساعت", hours: "ساعت", minute: "دقیقه", minutes: "دقیقه", second: "ثانیه", seconds: "ثانیه",
+            theWait: "انتظار", waitOver: "انتظار تمام شد", behindUs: "٪ گذشته",
+            heartbeats: "ضربان قلب", sunrises: "طلوع خورشید", fullMoons: "ماه کامل", kmSun: "کیلومتر دور خورشید",
+            now: "اکنون", rightNow: "همین حالا", oneYear: "یک سال پس از روزی که همدیگر را دیدیم",
+            whyTitle: "چرا دوستت دارم", of: "از", amp: " و ",
+            gateQ: "قرار دوم‌مان کجا رفتیم غذا بخوریم؟", gatePh: "جوابت", gateAria: "جواب تو", gateOpen: "باز کن",
+            gateWrong: "نه دقیقاً. دوباره امتحان کن.", gateNet: "صفحه بارگذاری نشد. اتصالت را بررسی کن و دوباره امتحان کن.",
+            gateHttps: "این صفحه به اتصال امن (https) نیاز دارد.",
+          },
+        };
+        const T = (k) => (UI[lang] && UI[lang][k] != null ? UI[lang][k] : UI.en[k]);
+        const LOCALE = () => (fa() ? "fa-IR-u-ca-persian-nu-arabext" : undefined);
+        const fmtInt = (n) => n.toLocaleString(fa() ? "fa-IR" : undefined);
+        const pad2 = (n) => fmtInt(n).padStart(2, fa() ? "\u06f0" : "0");
+
+        let payload = null;   // the secret, as opened
+        let cur = null;       // the same, in the language being read
+        const relangHooks = [];
+        function localise(p) {
+          const f = (fa() && p.fa) || {};
+          const events = {};
+          for (const k of Object.keys(p.events || {})) events[k] = { ...p.events[k], ...((f.events || {})[k] || {}) };
+          return {
+            ...p,
+            title: f.title || p.title,
+            events,
+            extras: { ...(p.extras || {}), ...(f.extras || {}) },
+            figures: (p.figures || []).map((d) => ({ ...d, label: (f.figures || {})[d.key] || d.label })),
+            strings: f.strings || {},
+          };
+        }
+        function applyStrings(root) {
+          if (!root || !cur) return;
+          root.querySelectorAll("[data-i18n]").forEach((el) => {
+            if (el.dataset.en == null) el.dataset.en = el.textContent;
+            el.textContent = cur.strings[el.dataset.i18n] || el.dataset.en;
+          });
+          root.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+            if (el.dataset.enAria == null) el.dataset.enAria = el.getAttribute("aria-label") || "";
+            el.setAttribute("aria-label", cur.strings[el.dataset.i18nAria] || el.dataset.enAria);
+          });
+        }
+        function applyLang() {
+          const root = document.documentElement;
+          root.lang = fa() ? "fa" : "en";
+          root.dir = fa() ? "rtl" : "ltr";
+          root.classList.toggle("fa", fa());
+          if (fa() && document.fonts && document.fonts.load) {
+            document.fonts.load("500 16px Vazirmatn").catch(() => {});
+            document.fonts.load('500 24px "Noto Nastaliq Urdu"').catch(() => {});
+          }
+          const gq = $("#gate-q"), gi = $("#gate-input"), gb = $("#gate-form button");
+          if (gq) gq.textContent = T("gateQ");
+          if (gi) { gi.placeholder = T("gatePh"); gi.setAttribute("aria-label", T("gateAria")); }
+          if (gb) gb.textContent = T("gateOpen");
+          if (!payload) return;
+          cur = localise(payload);
+          document.title = cur.title;
+          applyStrings($("#page"));
+          for (const h of relangHooks) h();
+        }
+        let langSwitching = false;
+        function setLang(next, quiet) {
+          if (next === lang || langSwitching) return;
+          try { localStorage.setItem(LANG_STORE, next); } catch (_) { /* ignore */ }
+          const page = $("#page");
+          if (quiet || unite || !payload || !page || reduceMotion || !page.animate) {
+            lang = next;
+            applyLang();
+            return;
+          }
+          // the page dims for a moment and comes back in the other language
+          langSwitching = true;
+          const out = page.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 450, easing: "ease", fill: "forwards" });
+          out.onfinish = () => {
+            lang = next;
+            applyLang();
+            out.cancel();
+            langSwitching = false;
+            page.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 700, easing: "ease" });
+          };
+        }
+        applyLang();
+
         // Everything personal on this page (the words, the dates, the star maps,
         // the photos) lives in secret.bin, encrypted with a key derived from the
         // answer to the question at the door. Nothing below knows the answer.
@@ -923,6 +1067,12 @@
         }
 
         function fmtDate(d) {
+          if (fa()) {
+            const loc = LOCALE();
+            const part = (o) => d.toLocaleDateString(loc, o);
+            return part({ weekday: "long" }) + " " + part({ day: "numeric" }) + " " + part({ month: "long" }) + " " + part({ year: "numeric" }) +
+              "، ساعت " + d.toLocaleTimeString(loc, { hour: "numeric", minute: "2-digit" });
+          }
           return d.toLocaleString(undefined, {
             weekday: "long", month: "long", day: "numeric", year: "numeric",
             hour: "numeric", minute: "2-digit",
@@ -963,19 +1113,20 @@
         }
 
         // ---------- clocks ----------
-        function makeClock(cfg, opts = {}) {
+        function makeClock(key, opts = {}) {
+          const cfg = () => cur.events[key];
           const el = document.createElement("div");
           el.className = "clock";
           el.innerHTML =
             '<p class="label"></p>' +
             '<div class="time">' +
             ["days", "hours", "minutes", "seconds"]
-              .map((u) => '<div class="u ' + u + '"><span class="n"></span><span class="unit">' + u + "</span></div>")
+              .map((u) => '<div class="u ' + u + '"><span class="n"></span><span class="unit"></span></div>')
               .join("") +
             "</div>" +
             '<p class="detail"></p>';
 
-          const when = parseLocal(cfg.date);
+          const when = parseLocal(cfg().date);
           const labelEl = $(".label", el);
           const detailEl = $(".detail", el);
           const n = {};
@@ -992,16 +1143,17 @@
             const b = breakdown(countingDown ? when - now : now - when);
 
             el.classList.toggle("countdown", countingDown);
-            labelEl.textContent = opts.countdown && !future && cfg.labelPast ? cfg.labelPast : cfg.label;
+            const c = cfg();
+            labelEl.textContent = opts.countdown && !future && c.labelPast ? c.labelPast : c.label;
 
-            setDigits(n.days, b.days.toLocaleString());
-            setDigits(n.hours, String(b.hours).padStart(2, "0"));
-            setDigits(n.minutes, String(b.minutes).padStart(2, "0"));
-            setDigits(n.seconds, String(b.seconds).padStart(2, "0"));
-            unit.days.textContent = b.days === 1 ? "day" : "days";
-            unit.hours.textContent = b.hours === 1 ? "hour" : "hours";
-            unit.minutes.textContent = b.minutes === 1 ? "minute" : "minutes";
-            unit.seconds.textContent = b.seconds === 1 ? "second" : "seconds";
+            setDigits(n.days, fmtInt(b.days));
+            setDigits(n.hours, pad2(b.hours));
+            setDigits(n.minutes, pad2(b.minutes));
+            setDigits(n.seconds, pad2(b.seconds));
+            unit.days.textContent = T(b.days === 1 ? "day" : "days");
+            unit.hours.textContent = T(b.hours === 1 ? "hour" : "hours");
+            unit.minutes.textContent = T(b.minutes === 1 ? "minute" : "minutes");
+            unit.seconds.textContent = T(b.seconds === 1 ? "second" : "seconds");
             detailEl.textContent = fmtDate(when);
 
             const crossed = wasFuture === true && !future;
@@ -1014,16 +1166,16 @@
 
         let nextSeenClock = null;
 
-        function initClocks(EVENTS) {
+        function initClocks() {
           const waitClocks = $("#wait-clocks");
-          const lastSeen = makeClock(EVENTS.lastSeen);
-          const nextSeen = makeClock(EVENTS.nextSeen, { countdown: true });
+          const lastSeen = makeClock("lastSeen");
+          const nextSeen = makeClock("nextSeen", { countdown: true });
           nextSeenClock = nextSeen;
           const divider = document.createElement("div");
           divider.className = "divider";
           waitClocks.append(lastSeen.el, divider, nextSeen.el);
 
-          const metAt = parseLocal(EVENTS.met.date);
+          const metAt = parseLocal(cur.events.met.date);
           const SYNODIC_MS = 29.530588853 * 86400000;
           const REF_FULL_MOON = Date.UTC(2000, 0, 21, 4, 40); // a known full moon
           function fullMoonsBetween(a, b) {
@@ -1032,10 +1184,10 @@
           }
 
           const STATS = [
-            { what: "heartbeats",         calc: (s) => Math.floor(s * (70 / 60)).toLocaleString() },
-            { what: "sunrises",           calc: (s) => Math.floor(s / 86400).toLocaleString() },
-            { what: "full moons",         calc: (s, now) => fullMoonsBetween(metAt, now).toLocaleString() },
-            { what: "km around the Sun",  calc: (s) => Math.floor(s * 29.78).toLocaleString() },
+            { what: "heartbeats", calc: (s) => fmtInt(Math.floor(s * (70 / 60))) },
+            { what: "sunrises",   calc: (s) => fmtInt(Math.floor(s / 86400)) },
+            { what: "fullMoons",  calc: (s, now) => fmtInt(fullMoonsBetween(metAt, now)) },
+            { what: "kmSun",      calc: (s) => fmtInt(Math.floor(s * 29.78)) },
           ];
           const statsEl = $("#stats");
           const statTiles = STATS.map((st, i) => {
@@ -1043,9 +1195,9 @@
             tile.className = "card tile reveal";
             tile.style.setProperty("--delay", 700 + i * 70 + "ms");
             tile.innerHTML = '<div class="big"></div><div class="what"></div>';
-            $(".what", tile).textContent = st.what;
+            $(".what", tile).textContent = T(st.what);
             statsEl.appendChild(tile);
-            return { st, big: $(".big", tile) };
+            return { st, big: $(".big", tile), what: $(".what", tile) };
           });
 
           const bar = $("#bar");
@@ -1061,12 +1213,12 @@
             frac = Math.min(1, Math.max(0, frac));
             bar.style.width = (frac * 100).toFixed(2) + "%";
             if (now >= end) {
-              progressLeft.textContent = "The wait is over";
+              progressLeft.textContent = T("waitOver");
               progressRight.textContent = "♥";
               waitCard.classList.add("done");
             } else {
-              progressLeft.textContent = "The wait";
-              progressRight.textContent = Math.floor(frac * 100) + "% behind us";
+              progressLeft.textContent = T("theWait");
+              progressRight.textContent = fmtInt(Math.floor(frac * 100)) + T("behindUs");
               waitCard.classList.remove("done");
             }
           }
@@ -1089,6 +1241,10 @@
             tick();
             setInterval(tick, 1000);
           }, 1000 - (Date.now() % 1000));
+          relangHooks.push(() => {
+            for (const t of statTiles) t.what.textContent = T(t.st.what);
+            tick();
+          });
         }
 
         // ---------- starfield ----------
@@ -1305,6 +1461,7 @@
             for (const f of FIGS) f.box.y = top + (maxH - f.box.h) / 2;
             page.style.setProperty("--sky-pad", Math.round(top + maxH + 76) + "px");
           }
+          if (unite) uniteTargets();
         }
 
         function renderCloud(f) {
@@ -1342,6 +1499,18 @@
           if (!FIGS.length || locked) return;
           const u = uniteState(t);
           uniteK = u.k;
+          if (unite && u.k > 0) uniteLabel();
+          // the page steps back while the two of them cross it
+          const pageEl = document.getElementById("page");
+          if (pageEl) {
+            if (u.k > 0) {
+              pageEl.style.opacity = (1 - 0.95 * u.k).toFixed(3);
+              pageDimmed = true;
+            } else if (pageDimmed) {
+              pageEl.style.opacity = "";
+              pageDimmed = false;
+            }
+          }
           const fade = Math.max(u.k, figMode === "banner" ? clamp(1 - (window.scrollY - 40) / 260, 0, 1) : 1);
           if (fade <= 0) return;
           const elapsed = reduceMotion ? 1e9 : t - traceStart;
@@ -1355,6 +1524,17 @@
             const { x: ox, y: oy } = figureOffset(f);
             const step = f.step;
             const traceLen = f.edges.length * step + EDGE_DUR;
+
+            // as the two come together each head leans a little toward the other,
+            // turning about the star they are going to share
+            sctx.save();
+            if (u.k > 0 && f.uniteRot && f.uniteStar != null) {
+              const S = f.pts[f.uniteStar];
+              const px = ox + S[0] * b.w, py = oy + S[1] * b.w;
+              sctx.translate(px, py);
+              sctx.rotate(f.uniteRot * u.k);
+              sctx.translate(-px, -py);
+            }
 
             // a soft warm nebula behind the figure
             const glowIn = reduceMotion ? 1 : clamp((elapsed - 300) / 2500, 0, 1);
@@ -1439,20 +1619,44 @@
               sctx.fill();
             }
 
-            // name
+            sctx.restore();
+
+            // name; while the two come together the names slide into one line beneath them
             const labelIn = reduceMotion ? 1 : clamp((elapsed - 600) / 900, 0, 1);
             if (labelIn > 0) {
               sctx.globalAlpha = fade * labelIn * (0.55 + 0.35 * boost);
               sctx.fillStyle = "#f6f3f8";
-              sctx.font = "italic 500 " + Math.round(14 + 4 * rs) + 'px "Cormorant Garamond", Georgia, serif';
-              sctx.textAlign = "center";
+              sctx.font = labelFont(f);
               sctx.textBaseline = "top";
-              sctx.fillText(f.label, ox + b.w / 2, oy + b.h + 12);
+              const slot = u.k > 0 && unite && unite.label ? unite.label[f.side] : null;
+              if (slot) {
+                const tw = sctx.measureText(f.label).width;
+                sctx.textAlign = "left";
+                sctx.fillText(f.label,
+                  (ox + b.w / 2 - tw / 2) * (1 - u.k) + slot.x * u.k,
+                  (oy + b.h + 12) * (1 - u.k) + slot.y * u.k);
+              } else {
+                sctx.textAlign = "center";
+                sctx.fillText(f.label, ox + b.w / 2, oy + b.h + 12);
+              }
             }
             sctx.globalAlpha = 1;
           }
-          drawBridge(u, fade);
+          drawUnion(u, fade);
         }
+
+        function labelFont(f) {
+          const rs = clamp(f.box.w / 240, 0.75, 1.15);
+          if (fa()) return "500 " + Math.round(13 + 4 * rs) + "px Vazirmatn, Tahoma, sans-serif";
+          return "italic 500 " + Math.round(14 + 4 * rs) + 'px "Cormorant Garamond", Georgia, serif';
+        }
+        relangHooks.push(() => {
+          for (const f of FIGS) {
+            const d = cur.figures.find((x) => x.key === f.key);
+            if (d) f.label = d.label;
+          }
+          if (unite) uniteTargets();
+        });
 
         function figureAt(x, y) {
           if (locked) return null;
@@ -1474,7 +1678,7 @@
           if (!locked && catchShot(ev.clientX, ev.clientY)) {
             sparkle(ev.clientX, ev.clientY, 30);
             shower();
-            if (wishLine) showNote(wishLine, 6500);
+            if (wishLine()) showNote(wishLine(), 6500);
             return;
           }
           const f = figureAt(ev.clientX, ev.clientY);
@@ -1599,6 +1803,9 @@
         // approximate Keplerian elements (J2000 values + rates per century,
         // valid 1800-2050); the Moon from a short mean-longitude series.
         let orrery = null;
+        const PLANET_FA = { Mercury: "عطارد", Venus: "زهره", Earth: "زمین", Mars: "مریخ", Jupiter: "مشتری", Saturn: "زحل", Uranus: "اورانوس", Neptune: "نپتون" };
+        const PHASE_FA = { "new": "نو", "waxing crescent": "هلال فزاینده", "first quarter": "تربیع اول", "waxing gibbous": "کوژ فزاینده",
+          "full": "کامل", "waning gibbous": "کوژ کاهنده", "last quarter": "تربیع آخر", "waning crescent": "هلال کاهنده" };
         const RAD = Math.PI / 180;
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const DARK = [6, 8, 22];
@@ -1710,7 +1917,7 @@
           c.stroke();
         }
 
-        function initOrrery(EVENTS, extras) {
+        function initOrrery() {
           const stage = $("#orrery .orb-stage");
           const canvas = $("#orb");
           const row = $("#moments");
@@ -1720,24 +1927,31 @@
           if (!stage || !canvas || !row || !infoEl) return;
           const ctx = canvas.getContext("2d");
 
-          const moments = Object.keys(EVENTS)
+          const titleOf = (m) => {
+            if (m.live) return T("rightNow");
+            if (m.future) return T("oneYear");
+            const ev = cur.events[m.key];
+            return ev.when || ev.label.replace(/^Since\s+/i, "When ");
+          };
+          const moments = Object.keys(cur.events)
             .filter((k) => k !== "lastSeen" && k !== "nextSeen")
             .map((k) => {
-              const ev = EVENTS[k];
-              const when = parseLocal(ev.date);
-              return { key: k, title: ev.when || ev.label.replace(/^Since\s+/i, "When "), ms: when.getTime(), when };
+              const when = parseLocal(cur.events[k].date);
+              return { key: k, ms: when.getTime(), when };
             });
-          moments.push({ key: "now", title: "Right now", live: true });
+          moments.push({ key: "now", live: true });
           const metMs = moments[0].ms;
           const targetOf = (m) => (m.live ? Date.now() : m.ms);
           // one more moment, a year on from the first, that only shows if you go looking
           const anniv = new Date(moments[0].when.getTime());
           anniv.setFullYear(anniv.getFullYear() + 1);
-          moments.push({ key: "anniversary", title: "One year from the day we met", ms: anniv.getTime(), when: anniv, future: true });
+          moments.push({ key: "anniversary", ms: anniv.getTime(), when: anniv, future: true });
+          for (const m of moments) m.title = titleOf(m);
           let futureShown = false;
           const lastIdx = () => moments.length - (futureShown ? 1 : 2);
-          const reasons = (extras && Array.isArray(extras.reasons) ? extras.reasons : []).filter((r) => typeof r === "string" && r.trim());
-          const reasonsTitle = (extras && typeof extras.reasonsTitle === "string" && extras.reasonsTitle.trim()) || "Why I love you";
+          const reasonsOf = () => (Array.isArray(cur.extras.reasons) ? cur.extras.reasons : []).filter((r) => typeof r === "string" && r.trim());
+          const reasonsTitle = () => (typeof cur.extras.reasonsTitle === "string" && cur.extras.reasonsTitle.trim()) || T("whyTitle");
+          let reasons = reasonsOf();
 
           // A view from a little above the ecliptic, turned so the stretch
           // of Earth's orbit we've shared sits nearest the viewer.
@@ -2020,12 +2234,12 @@
               const o = pos.find((e) => e.p === hoverName);
               if (o) {
                 const r = o.p.size * scale * o.q.p;
-                ctx.font = "500 11px Inter, system-ui, sans-serif";
+                ctx.font = fa() ? "500 12px Vazirmatn, Tahoma, sans-serif" : "500 11px Inter, system-ui, sans-serif";
                 ctx.textAlign = "center";
                 ctx.textBaseline = "top";
-                if ("letterSpacing" in ctx) ctx.letterSpacing = "0.1em";
+                if ("letterSpacing" in ctx) ctx.letterSpacing = fa() ? "0px" : "0.1em";
                 ctx.fillStyle = "rgba(246, 243, 248, " + (0.75 * hoverA).toFixed(3) + ")";
-                ctx.fillText(o.p.name.toUpperCase(), o.q.x, o.q.y + r * (o.p.ring ? 1.9 : 1) + 7 + (1 - hoverA) * 4);
+                ctx.fillText(fa() ? PLANET_FA[o.p.name] || o.p.name : o.p.name.toUpperCase(), o.q.x, o.q.y + r * (o.p.ring ? 1.9 : 1) + 7 + (1 - hoverA) * 4);
               }
             }
             if (noteOn) placeNote();
@@ -2035,11 +2249,19 @@
           const ease = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
           const degBetween = (a, b) => Math.round(((((Math.atan2(b.y, b.x) - Math.atan2(a.y, a.x)) / RAD) % 360) + 360) % 360);
 
+          // tense: true = was, false = is, "will be" = will be
           function phaseWords(ph, tense) {
+            const whole = ph.name === "new" || ph.name === "full";
+            const pct = Math.round(ph.lit * 100);
+            if (fa()) {
+              const verb = tense === true ? "بود" : tense === false ? "است" : "خواهد بود";
+              return PHASE_FA[ph.name] + " " + verb + (whole ? "" : "، " + fmtInt(pct) + "٪ روشن");
+            }
             const be = tense === true ? "was" : tense === false ? "is" : tense;
-            if (ph.name === "new" || ph.name === "full") return be + " " + ph.name;
-            return be + " a " + ph.name + ", " + Math.round(ph.lit * 100) + "% lit";
+            if (whole) return be + " " + ph.name;
+            return be + " a " + ph.name + ", " + pct + "% lit";
           }
+          const deg = (n) => fmtInt(n) + "°";
 
           function fillInfo(m) {
             const at = targetOf(m);
@@ -2047,19 +2269,24 @@
             const eNow = heliocentric(EARTH, Date.now());
             info.title.textContent = m.title;
             if (m.live) {
+              const carried = degBetween(heliocentric(EARTH, metMs), eNow);
               info.when.textContent = fmtDate(new Date());
-              info.sky.textContent = "The Moon " + phaseWords(ph, false) + ". Since we met, Earth has carried us " +
-                degBetween(heliocentric(EARTH, metMs), eNow) + "° around the Sun.";
+              info.sky.textContent = fa()
+                ? "ماه " + phaseWords(ph, false) + ". از روزی که همدیگر را دیدیم، زمین ما را " + deg(carried) + " دور خورشید برده است."
+                : "The Moon " + phaseWords(ph, false) + ". Since we met, Earth has carried us " + deg(carried) + " around the Sun.";
               info.ago.textContent = "";
             } else if (m.future) {
               info.when.textContent = fmtDate(m.when);
-              info.sky.textContent = "The Moon " + phaseWords(ph, "will be") + ", and Earth will be right back where it was the day we met.";
+              info.sky.textContent = fa()
+                ? "ماه " + phaseWords(ph, "will be") + "، و زمین درست همان‌جایی خواهد بود که روز آشنایی‌مان بود."
+                : "The Moon " + phaseWords(ph, "will be") + ", and Earth will be right back where it was the day we met.";
               updateAgo();
             } else {
               info.when.textContent = fmtDate(m.when);
               const travelled = degBetween(heliocentric(EARTH, at), eNow);
-              info.sky.textContent = "The Moon " + phaseWords(ph, true) + "." +
-                (travelled > 0 ? " Since then, Earth has carried us " + travelled + "° around the Sun." : "");
+              info.sky.textContent = fa()
+                ? "ماه " + phaseWords(ph, true) + "." + (travelled > 0 ? " از آن زمان، زمین ما را " + deg(travelled) + " دور خورشید برده است." : "")
+                : "The Moon " + phaseWords(ph, true) + "." + (travelled > 0 ? " Since then, Earth has carried us " + deg(travelled) + " around the Sun." : "");
               updateAgo();
             }
           }
@@ -2071,13 +2298,17 @@
               info.when.textContent = fmtDate(new Date());
               return;
             }
-            const part = (n, w) => n.toLocaleString() + " " + w + (n === 1 ? "" : "s");
-            const words = (b) => part(b.days, "day") + ", " + part(b.hours, "hour") + ", " + part(b.minutes, "minute") + " and " + part(b.seconds, "second");
+            const part = (n, w) => fmtInt(n) + " " + T(n === 1 ? w : w + "s");
+            const words = (b) => fa()
+              ? part(b.days, "day") + "، " + part(b.hours, "hour") + "، " + part(b.minutes, "minute") + " و " + part(b.seconds, "second")
+              : part(b.days, "day") + ", " + part(b.hours, "hour") + ", " + part(b.minutes, "minute") + " and " + part(b.seconds, "second");
             if (m.future) {
-              info.ago.textContent = "In " + words(breakdown(m.ms - Date.now())) + ". To be continued.";
+              info.ago.textContent = fa()
+                ? words(breakdown(m.ms - Date.now())) + " دیگر. ادامه دارد."
+                : "In " + words(breakdown(m.ms - Date.now())) + ". To be continued.";
               return;
             }
-            info.ago.textContent = words(breakdown(Date.now() - m.ms)) + " ago";
+            info.ago.textContent = fa() ? words(breakdown(Date.now() - m.ms)) + " پیش" : words(breakdown(Date.now() - m.ms)) + " ago";
           }
 
           function highlight(i) {
@@ -2128,15 +2359,21 @@
           }
 
           // ----- the row of moons -----
-          const shortDate = (d) => d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+          const shortDate = (d) => d.toLocaleDateString(LOCALE(), { month: "short", day: "numeric" });
+          const ariaOf = (m) => {
+            const ph = moonPhase(targetOf(m));
+            return fa()
+              ? m.title + (m.live ? "" : "، " + fmtDate(m.when)) + ". ماه " + phaseWords(ph, m.future ? "will be" : !m.live) + "."
+              : m.title + (m.live ? "" : ", " + fmtDate(m.when)) + ". The Moon " + phaseWords(ph, m.future ? "will be" : !m.live) + ".";
+          };
           buttons = moments.map((m, i) => {
             const b = document.createElement("button");
             b.type = "button";
             b.className = m.future ? "moment future" : "moment";
             b.innerHTML = '<canvas class="moon" aria-hidden="true"></canvas><span class="d"></span>';
-            $(".d", b).textContent = m.live ? "Now" : shortDate(m.when);
+            $(".d", b).textContent = m.live ? T("now") : shortDate(m.when);
             const ph = moonPhase(targetOf(m));
-            b.setAttribute("aria-label", m.title + (m.live ? "" : ", " + fmtDate(m.when)) + ". The Moon " + phaseWords(ph, m.future ? "will be" : !m.live) + ".");
+            b.setAttribute("aria-label", ariaOf(m));
             const mc = $(".moon", b);
             const px = Math.round(34 * dpr);
             mc.width = mc.height = px;
@@ -2209,8 +2446,9 @@
           row.addEventListener("keydown", (ev) => {
             if (ev.key !== "ArrowLeft" && ev.key !== "ArrowRight") return;
             ev.preventDefault();
-            if (ev.key === "ArrowRight" && selected === lastIdx()) revealFuture();
-            const j = Math.max(0, Math.min(lastIdx(), selected + (ev.key === "ArrowRight" ? 1 : -1)));
+            const fwd = (ev.key === "ArrowRight") !== fa();   // the row runs the other way in Persian
+            if (fwd && selected === lastIdx()) revealFuture();
+            const j = Math.max(0, Math.min(lastIdx(), selected + (fwd ? 1 : -1)));
             select(j, true);
             buttons[j].focus();
           });
@@ -2254,7 +2492,7 @@
           function showReason() {
             const i = reasonIdx;
             reasonIdx = (reasonIdx + 1) % reasons.length;
-            $(".n", earthNote).textContent = reasonsTitle + " \u00b7 " + (i + 1) + " of " + reasons.length;
+            $(".n", earthNote).textContent = reasonsTitle() + " \u00b7 " + fmtInt(i + 1) + " " + T("of") + " " + fmtInt(reasons.length);
             $(".t", earthNote).textContent = reasons[i];
             placeNote();
             earthNote.classList.add("show");
@@ -2310,6 +2548,17 @@
           }, 1000 - (Date.now() % 1000));
           if (reduceMotion) setInterval(() => { if (moments[selected] && moments[selected].live) { tDisp = Date.now(); draw(performance.now()); } }, 60000);
 
+          relangHooks.push(() => {
+            reasons = reasonsOf();
+            reasonIdx = reasonIdx % Math.max(1, reasons.length);
+            moments.forEach((m, i) => {
+              m.title = titleOf(m);
+              if (!buttons[i]) return;
+              $(".d", buttons[i]).textContent = m.live ? T("now") : shortDate(m.when);
+              buttons[i].setAttribute("aria-label", ariaOf(m));
+            });
+            if (moments[selected]) fillInfo(moments[selected]);
+          });
           orrery = { frame, startTour };
         }
 
@@ -2344,93 +2593,167 @@
           rain();
         }
 
-        // the two figures drift together, join, and settle back
-        let unite = null, uniteK = 0;
-        const UNITE_IN = 2400, UNITE_HOLD = 3200, UNITE_OUT = 2400;
+        // the two figures drift together, lean in until their temples touch, and the
+        // two stars at that point become one star that both constellations share
+        let unite = null, uniteK = 0, pageDimmed = false;
+        const UNITE_IN = 2400, UNITE_HOLD = 3400, UNITE_OUT = 2400;
+        const LEAN = 5 * Math.PI / 180;
         function uniteState(t) {
-          if (!unite) return { k: 0, bridge: 0, bridgeA: 0 };
+          if (!unite) return { k: 0, fuse: 0 };
           const e = t - unite.start;
           const ease = (p) => (p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2);
-          if (e < UNITE_IN) return { k: ease(e / UNITE_IN), bridge: 0, bridgeA: 0 };
-          if (e < UNITE_IN + UNITE_HOLD) return { k: 1, bridge: clamp((e - UNITE_IN) / 1100, 0, 1), bridgeA: 1 };
+          // the shared star comes up as the last of the distance closes
+          const fuseIn = clamp((e - (UNITE_IN - 300)) / 900, 0, 1);
+          if (e < UNITE_IN) return { k: ease(e / UNITE_IN), fuse: fuseIn };
+          if (e < UNITE_IN + UNITE_HOLD) return { k: 1, fuse: fuseIn };
           const p = (e - UNITE_IN - UNITE_HOLD) / UNITE_OUT;
           if (p >= 1) {
             unite = null;
-            return { k: 0, bridge: 0, bridgeA: 0 };
+            return { k: 0, fuse: 0 };
           }
-          return { k: 1 - ease(p), bridge: 1, bridgeA: clamp(1 - p * 2.5, 0, 1) };
+          return { k: 1 - ease(p), fuse: clamp(1 - p * 2.5, 0, 1) };
         }
         function startUnite() {
-          if (unite || locked || reduceMotion || FIGS.length < 2) return;
+          if (unite || locked || reduceMotion || FIGS.length < 2) return false;
           const L = FIGS.find((f) => f.side === "left"), Rf = FIGS.find((f) => f.side === "right");
-          if (!L || !Rf || !L.box || !Rf.box) return;
-          const gap = clamp(Math.min(L.box.w, Rf.box.w) * 0.4, 48, 130);
-          L.uniteT = { x: W / 2 - gap / 2 - L.box.w, y: H / 2 - L.box.h / 2 };
-          Rf.uniteT = { x: W / 2 + gap / 2, y: H / 2 - Rf.box.h / 2 };
-          const pick = (f, rightmost) => {
-            let best = 0, bx = rightmost ? -Infinity : Infinity;
+          if (!L || !Rf || !L.box || !Rf.box) return false;
+          // the outline star nearest eye level on the side that faces the other: the temple,
+          // where two heads touch when they lean together
+          const pick = (f, facingRight) => {
+            const eyes = f.pts.filter((P) => P[2] === 0);
+            const eyeY = eyes.length ? eyes.reduce((a, P) => a + P[1], 0) / eyes.length : f.aspect * 0.45;
+            let best = -1, bd = Infinity, ext = -1, bx = facingRight ? -Infinity : Infinity;
             f.pts.forEach((P, i) => {
-              if (P[2] > 2) return;
-              if (rightmost ? P[0] > bx : P[0] < bx) { bx = P[0]; best = i; }
+              if (P[2] !== 2) return;
+              if (facingRight ? P[0] > bx : P[0] < bx) { bx = P[0]; ext = i; }
+              if ((facingRight ? 1 - P[0] : P[0]) > 0.22) return;
+              const d = Math.abs(P[1] - eyeY);
+              if (d < bd) { bd = d; best = i; }
             });
-            return best;
+            return best >= 0 ? best : ext;
           };
-          unite = { start: performance.now(), a: pick(L, true), b: pick(Rf, false), pulsed: false };
+          unite = { start: performance.now(), a: pick(L, true), b: pick(Rf, false), label: null };
+          uniteTargets();
           document.documentElement.classList.add("uniting");
           setTimeout(() => document.documentElement.classList.remove("uniting"), UNITE_IN + UNITE_HOLD + 300);
+          return true;
         }
-        function drawBridge(u, fade) {
-          if (!unite || u.bridge <= 0) return;
+        function uniteTargets() {
+          if (!unite) return;
+          const L = FIGS.find((f) => f.side === "left"), Rf = FIGS.find((f) => f.side === "right");
+          if (!L || !Rf || !L.box || !Rf.box) return;
+          const A = L.pts[unite.a], B = Rf.pts[unite.b];
+          const wl = L.box.w, wr = Rf.box.w;
+          // both boxes relative to the shared star, and the pair centred on the screen
+          const left = Math.min(-A[0] * wl, -B[0] * wr), right = Math.max((1 - A[0]) * wl, (1 - B[0]) * wr);
+          const top = Math.min(-A[1] * wl, -B[1] * wr), bottom = Math.max(L.box.h - A[1] * wl, Rf.box.h - B[1] * wr);
+          const labelH = 36;
+          const mx = W / 2 - (left + right) / 2, my = H / 2 - (top + bottom + labelH) / 2;
+          L.uniteT = { x: mx - A[0] * wl, y: my - A[1] * wl };
+          Rf.uniteT = { x: mx - B[0] * wr, y: my - B[1] * wr };
+          L.uniteStar = unite.a;
+          Rf.uniteStar = unite.b;
+          L.uniteRot = LEAN;
+          Rf.uniteRot = -LEAN;
+          unite.labelY = my + bottom + 12;
+          uniteLabel();
+        }
+        // the two names settle side by side beneath them, with an ampersand between;
+        // measured every frame, so a font that arrives late still lines up
+        function uniteLabel() {
+          if (!unite) return;
+          const L = FIGS.find((f) => f.side === "left"), Rf = FIGS.find((f) => f.side === "right");
+          if (!L || !Rf || !L.box || !Rf.box) return;
+          sctx.font = labelFont(L);
+          const wL = sctx.measureText(L.label).width;
+          sctx.font = labelFont(Rf);
+          const wR = sctx.measureText(Rf.label).width;
+          const ampFont = labelFont(L.box.w >= Rf.box.w ? L : Rf);
+          sctx.font = ampFont;
+          const wAmp = sctx.measureText(T("amp")).width;
+          const x0 = W / 2 - (wL + wAmp + wR) / 2, y = unite.labelY;
+          unite.label = { left: { x: x0, y }, amp: { x: x0 + wL, y, font: ampFont }, right: { x: x0 + wL + wAmp, y } };
+        }
+        function drawUnion(u, fade) {
+          if (!unite || u.fuse <= 0) return;
           const L = FIGS.find((f) => f.side === "left"), Rf = FIGS.find((f) => f.side === "right");
           if (!L || !Rf || !L.box || !Rf.box) return;
           const oL = figureOffset(L), oR = figureOffset(Rf);
           const A = L.pts[unite.a], B = Rf.pts[unite.b];
-          const ax = oL.x + A[0] * L.box.w, ay = oL.y + A[1] * L.box.w;
-          const bx = oR.x + B[0] * Rf.box.w, by = oR.y + B[1] * Rf.box.w;
-          const p = u.bridge;
-          const g = sctx.createLinearGradient(ax, ay, bx, by);
-          g.addColorStop(0, "rgba(" + L.tint + ",0.75)");
-          g.addColorStop(1, "rgba(" + Rf.tint + ",0.75)");
-          sctx.globalAlpha = fade * u.bridgeA;
-          sctx.strokeStyle = g;
-          sctx.lineWidth = 1;
-          sctx.lineCap = "round";
+          // the two stars are the pivots of the lean, so these are their true positions
+          const x = (oL.x + A[0] * L.box.w + oR.x + B[0] * Rf.box.w) / 2;
+          const y = (oL.y + A[1] * L.box.w + oR.y + B[1] * Rf.box.w) / 2;
+          const s = u.fuse;
+          const rs = clamp(Math.min(L.box.w, Rf.box.w) / 240, 0.75, 1.15);
+          const r = 1.9 * rs * (1 + 0.7 * s);
+          const hr = r * 7;
+          sctx.globalAlpha = fade * 0.5 * s;
+          sctx.drawImage(L.halo, x - hr, y - hr, hr * 2, hr * 2);
+          sctx.drawImage(Rf.halo, x - hr, y - hr, hr * 2, hr * 2);
+          sctx.globalAlpha = fade * s;
+          sctx.fillStyle = "rgba(255,255,255,0.95)";
           sctx.beginPath();
-          sctx.moveTo(ax, ay);
-          sctx.lineTo(ax + (bx - ax) * p, ay + (by - ay) * p);
-          sctx.stroke();
-          for (let i = 1; i <= 3; i++) {
-            const f = i / 4;
-            const s = clamp((p - f) / 0.1, 0, 1);
-            if (s <= 0) break;
-            const x = ax + (bx - ax) * f, y = ay + (by - ay) * f;
-            const r = 2 * (1 - Math.pow(1 - s, 3));
-            const hr = r * 6;
-            sctx.globalAlpha = fade * u.bridgeA * 0.8 * s;
-            sctx.drawImage(i === 2 ? Rf.halo : L.halo, x - hr, y - hr, hr * 2, hr * 2);
-            sctx.globalAlpha = fade * u.bridgeA;
-            sctx.fillStyle = "rgba(255,255,255,0.95)";
-            sctx.beginPath();
-            sctx.arc(x, y, r, 0, TAU);
-            sctx.fill();
-          }
-          if (p >= 1 && !unite.pulsed) {
-            unite.pulsed = true;
-            L.pulse = 1.2;
-            Rf.pulse = 1.2;
-            sparkle((ax + bx) / 2, (ay + by) / 2, 26);
+          sctx.arc(x, y, r, 0, TAU);
+          sctx.fill();
+          // and the names become one
+          if (unite.label) {
+            const a = unite.label.amp;
+            sctx.globalAlpha = fade * s * 0.55;
+            sctx.fillStyle = "#f6f3f8";
+            sctx.font = a.font;
+            sctx.textAlign = "left";
+            sctx.textBaseline = "top";
+            sctx.fillText(T("amp"), a.x, a.y);
           }
           sctx.globalAlpha = 1;
         }
 
-        // her name, typed anywhere
-        let secretWord = "", typed = "", wishLine = "";
+        // a name, or a few of the things people type to each other, typed anywhere
+        const SWEET_WORDS = ["love", "ily", "missyou", "kiss", "hug", "forever", "always", "xoxo", "hi", "hello", "hey", "yes"];
+        // the things Persians call each other, typed in either alphabet; these also turn the page Persian
+        const SWEET_FA = [
+          "salam", "سلام", "shabbekheir", "شب بخیر", "sobhbekheir", "صبح بخیر",
+          "azizam", "عزیزم", "aziz", "عزیز", "azizedelam", "عزیز دلم",
+          "joonam", "جونم", "janam", "جانم", "joon", "جون", "jaan", "جان", "janedelam", "جان دلم",
+          "eshgham", "عشقم", "eshgheman", "عشق من", "asheghetam", "عاشقتم", "divoonatam", "دیوونتم", "mikhamet", "میخوامت",
+          "delam", "دلم", "delbaram", "دلبرم", "ghalbam", "قلبم", "jigaram", "جیگرم", "jigar", "جیگر",
+          "nafasam", "نفسم", "omram", "عمرم", "zendegim", "زندگیم", "hamechizam", "همه چیزم", "yaram", "یارم", "maham", "ماهم",
+          "khoshgelam", "خوشگلم", "nazaninam", "نازنینم", "shirinam", "شیرینم", "asalam", "عسلم", "golam", "گلم",
+          "khanoomam", "khanumam", "خانومم", "noorecheshmam", "نور چشمم", "tajesaram", "تاج سرم",
+          "doostetdaram", "doosetdaram", "dusetdaram", "dostetdaram", "دوستت دارم", "دوست دارم",
+          "ghorbunet", "ghorbonet", "qorbunet", "qorbonet", "قربونت", "قربانت", "fadat", "فدات",
+          "deltangetam", "دلتنگتم", "tangshode", "تنگ شده",
+          "boos", "بوس", "booset", "بوست", "booseh", "بوسه",
+        ];
+        const LANG_WORDS = { fa: ["farsi", "parsi", "persian", "فارسی", "پارسی"], en: ["english", "انگلیسی"] };
+        // letters only, in either alphabet, with the Arabic forms of two letters folded into the Persian ones
+        const lettersOf = (s) => String(s).toLowerCase().normalize("NFKD").replace(/\u064a/g, "\u06cc").replace(/\u0643/g, "\u06a9").replace(/[^a-z\u0600-\u06ff]/g, "");
+        for (const k of Object.keys(LANG_WORDS)) LANG_WORDS[k] = LANG_WORDS[k].map(lettersOf);
+        let secretEn = [], secretFa = [], typed = "";
+        const wishLine = () => (cur && typeof cur.extras.wish === "string" ? cur.extras.wish.trim() : "");
         window.addEventListener("keydown", (ev) => {
-          if (locked || !secretWord || ev.ctrlKey || ev.metaKey || ev.altKey || ev.key.length !== 1) return;
+          if (ev.ctrlKey || ev.metaKey || ev.altKey || ev.key.length !== 1) return;
           const el = ev.target;
           if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
-          typed = (typed + ev.key.toLowerCase()).slice(-32);
-          if (typed.endsWith(secretWord)) {
+          typed = lettersOf(typed + ev.key).slice(-40);
+          const to = Object.keys(LANG_WORDS).find((l) => LANG_WORDS[l].some((w) => typed.endsWith(w)));
+          if (to) {
+            typed = "";
+            setLang(to === "fa" && fa() ? "en" : to);
+            return;
+          }
+          if (locked) return;
+          if (secretFa.some((w) => typed.endsWith(w))) {
+            typed = "";
+            // a Persian word brings the two of them together, and the page comes back in Persian
+            const began = startUnite();
+            if (!fa()) {
+              if (began) setTimeout(() => { if (!fa()) setLang("fa", true); }, UNITE_IN + 200);
+              else setLang("fa");
+            }
+            return;
+          }
+          if (secretEn.some((w) => typed.endsWith(w))) {
             typed = "";
             startUnite();
           }
@@ -2458,20 +2781,22 @@
         }
 
         function initEggs(p) {
-          const ex = p.extras || {};
-          wishLine = typeof ex.wish === "string" ? ex.wish.trim() : "";
-          const figs = p.figures || [];
-          const right = figs.find((f) => f.side === "right") || figs[figs.length - 1];
-          secretWord = right ? String(right.label).toLowerCase().normalize("NFKD").replace(/[^a-z]/g, "") : "";
-          if (secretWord.length < 3) secretWord = "";
+          // either name, in either alphabet
+          const namesEn = (p.figures || []).map((f) => f.label);
+          const namesFa = p.fa && p.fa.figures ? Object.values(p.fa.figures) : [];
+          secretEn = [...namesEn, ...SWEET_WORDS].map(lettersOf).filter((w) => w.length >= 2);
+          secretFa = [...namesFa, ...SWEET_FA].map(lettersOf).filter((w) => w.length >= 2);
 
           // the minute each thing happened, every day
           const minutes = Object.keys(p.events)
             .filter((k) => k !== "lastSeen" && k !== "nextSeen")
             .map((k) => {
-              const ev = p.events[k];
-              const d = parseLocal(ev.date);
-              return { hm: d.getHours() * 60 + d.getMinutes(), line: ev.minute || ev.label.replace(/^Since\s+/i, "This is the minute ") + "." };
+              const d = parseLocal(p.events[k].date);
+              const line = () => {
+                const ev = cur.events[k];
+                return ev.minute || ev.label.replace(/^Since\s+/i, "This is the minute ") + ".";
+              };
+              return { hm: d.getHours() * 60 + d.getMinutes(), line };
             });
           let shownKey = "";
           function checkMinute() {
@@ -2483,7 +2808,7 @@
             if (!hit || key === shownKey) return;
             shownKey = key;
             const left = Math.max(5000, 60000 - (d.getSeconds() * 1000 + d.getMilliseconds()));
-            showNote(hit.line, left);
+            showNote(hit.line(), left);
             flareTarget = 1;
             setTimeout(() => { flareTarget = 0; }, left);
           }
@@ -2526,12 +2851,15 @@
 
         // ---------- building the page once the secret is open ----------
         function buildPage(p) {
-          document.title = p.title;
+          payload = p;
+          cur = localise(p);
+          document.title = cur.title;
           const page = $("#page");
           page.innerHTML = p.html;
-          initClocks(p.events);
-          initOrrery(p.events, p.extras);
-          initFigures(p);
+          applyStrings(page);
+          initClocks();
+          initOrrery();
+          initFigures(cur);
           initEggs(p);
           const heart = $("#heart");
           if (heart) {
@@ -2618,7 +2946,7 @@
           const card = $(".gate-card");
           const button = $("button", form);
           if (!window.crypto || !crypto.subtle) {
-            msg.textContent = "This page needs a secure (https) connection.";
+            msg.textContent = T("gateHttps");
             return;
           }
           const key = await rememberedKey();
@@ -2648,7 +2976,7 @@
                 payload = await openSecret(k);
               } catch (e) {
                 if (e && e.message === "fetch") {
-                  msg.textContent = "Couldn't load the page. Check your connection and try again.";
+                  msg.textContent = T("gateNet");
                   return;
                 }
                 throw e;
@@ -2658,7 +2986,7 @@
               buildPage(payload);
               unlock(true);
             } catch (e) {
-              msg.textContent = "Not quite. Try again.";
+              msg.textContent = T("gateWrong");
               card.classList.remove("shake");
               void card.offsetWidth;
               card.classList.add("shake");
