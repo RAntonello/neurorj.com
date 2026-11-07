@@ -165,20 +165,13 @@
       }
 
       .gate-card {
-        width: min(640px, 100%);
+        width: min(520px, 100%);
         text-align: center;
-        padding: 34px 30px 30px;
+        padding: 30px 30px 26px;
       }
 
       .gate-card:hover {
         transform: none;
-      }
-
-      .gate-q {
-        margin: 4px 0 22px;
-        font: italic 500 clamp(15px, 4.1vw, 26px) / 1.3 var(--serif);
-        color: var(--text);
-        white-space: nowrap;
       }
 
       .gate-row {
@@ -274,11 +267,10 @@
     <div class="glow glow-b" aria-hidden="true"></div>
     <canvas id="fx" aria-hidden="true"></canvas>
 
-    <div class="gate" id="gate" role="dialog" aria-labelledby="gate-q">
+    <div class="gate" id="gate" role="dialog" aria-label="Password">
       <form class="card gate-card" id="gate-form" autocomplete="off">
-        <p class="gate-q" id="gate-q">Where did we go to eat on our second date?</p>
         <div class="gate-row">
-          <input id="gate-input" type="text" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="your answer" aria-label="Your answer" />
+          <input id="gate-input" type="text" autocapitalize="none" autocorrect="off" spellcheck="false" aria-label="Password" />
           <button type="submit">Open</button>
         </div>
         <p class="gate-msg" id="gate-msg" aria-live="polite"></p>
@@ -551,7 +543,8 @@
               unlock(false);
               return;
             } catch (e) {
-              console.error(e);
+              // a remembered key that no longer fits is normal after the password changes
+              if (!(e && e.name === "OperationError")) console.error(e);
               try { localStorage.removeItem(KEY_STORE); } catch (_) { /* ignore */ }
             }
           }
